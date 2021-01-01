@@ -27,12 +27,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeView() {
-        text = findViewById(R.id.text);
+        text = findViewById(R.id.tvUsername);
 
         user = UserService.getInstance();
     }
 
-    public void logout(View view) {
+    public void onLogoutClick(View view) {
         user.logout();
         startActivity(new Intent(this, LoginActivity.class));
         finish();

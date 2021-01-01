@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         user = UserService.getInstance();
     }
 
-    public void login(View view) {
+    public void onLoginClick(View view) {
         user.login(email.getText().toString().trim(), password.getText().toString().trim())
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
