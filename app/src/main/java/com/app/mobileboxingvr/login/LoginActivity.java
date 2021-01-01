@@ -11,15 +11,16 @@ import android.widget.Toast;
 
 import com.app.mobileboxingvr.MainActivity;
 import com.app.mobileboxingvr.R;
+import com.app.mobileboxingvr.services.UserService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private UserService user;
+
     private EditText email, password;
-    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,21 +28,18 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         initializeView();
-        initializeFirebase();
-    }
-
-    private void initializeFirebase() {
-        auth = FirebaseAuth.getInstance();
     }
 
     private void initializeView() {
         email = findViewById(R.id.etEmail);
         password = findViewById(R.id.etPassword);
+
+        user = UserService.getInstance();
     }
 
     public void login(View view) {
-        auth.signInWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        user.login(email.getText().toString().trim(), password.getText().toString().trim())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
@@ -63,5 +61,10 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        if (user.getCurrentUser() != null) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+        }
     }
 }
