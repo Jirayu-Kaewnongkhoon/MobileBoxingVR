@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.app.mobileboxingvr.login.LoginActivity;
+import com.app.mobileboxingvr.services.BackgroundService;
 import com.app.mobileboxingvr.services.UserService;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +27,16 @@ public class MainActivity extends AppCompatActivity {
         text.setText(user.getCurrentUser().getDisplayName());
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (user.getCurrentUser() == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
+    }
+
     private void initializeView() {
         text = findViewById(R.id.tvUsername);
 
@@ -38,13 +49,12 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (user.getCurrentUser() == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-        }
+    public void onStartJobClick(View view) {
+        BackgroundService.getInstance(this).startService();
     }
+
+    public void onStopJobClick(View view) {
+        BackgroundService.getInstance(this).stopService();
+    }
+
 }
