@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "380835335564",
+    "firebase_url": "https://mobiletest-5de36-default-rtdb.firebaseio.com",
+    "project_id": "mobiletest-5de36",
+    "storage_bucket": "mobiletest-5de36.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:380835335564:android:de2cf03814ead9f9451aa9",
+        "android_client_info": {
+          "package_name": "com.app.mobileboxingvr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "380835335564-bmuuic1356m0fsd7btdu3aughut9fie4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsSewlQt1nSi3YUpYSDBfgGCKpkI9_9ug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "380835335564-bmuuic1356m0fsd7btdu3aughut9fie4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

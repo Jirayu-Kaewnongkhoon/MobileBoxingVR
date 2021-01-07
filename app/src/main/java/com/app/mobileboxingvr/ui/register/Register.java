@@ -1,4 +1,4 @@
-package com.app.mobileboxingvr.register;
+package com.app.mobileboxingvr.ui.register;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
