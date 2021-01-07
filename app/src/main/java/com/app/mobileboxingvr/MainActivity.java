@@ -1,21 +1,32 @@
 package com.app.mobileboxingvr;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.app.mobileboxingvr.helpers.StepCounter;
+import com.app.mobileboxingvr.models.GameProfile;
+import com.app.mobileboxingvr.services.ActivityService;
 import com.app.mobileboxingvr.ui.login.LoginActivity;
 import com.app.mobileboxingvr.background.BackgroundService;
 import com.app.mobileboxingvr.services.UserService;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
     private UserService user;
+    private ActivityService activity;
 
-    private TextView text;
+    private TextView username, playerStatus;
+    private Button btnStart, btnStop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         initializeView();
 
-        text.setText(user.getCurrentUser().getDisplayName());
+        username.setText(user.getCurrentUser().getDisplayName());
     }
 
     @Override
@@ -35,12 +46,42 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
+
+        if (StepCounter.getInstance(this).getStepSensor() == null) {
+
+            // app cannot do background task
+            btnStart.setClickable(false);
+            btnStop.setClickable(false);
+
+            Log.d("MAIN", "onStart: Not Clickable");
+
+        }
+
+        displayPlayerStatus();
     }
 
     private void initializeView() {
-        text = findViewById(R.id.tvUsername);
+        username = findViewById(R.id.tvUsername);
+        playerStatus = findViewById(R.id.tvPlayerStatus);
+        btnStart = findViewById(R.id.btnStart);
+        btnStop = findViewById(R.id.btnStop);
 
         user = UserService.getInstance();
+        activity = ActivityService.getInstance(getApplicationContext());
+    }
+
+    private void displayPlayerStatus() {
+        activity.getGameProfile().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                playerStatus.setText(snapshot.getValue(GameProfile.class).toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void onLogoutClick(View view) {

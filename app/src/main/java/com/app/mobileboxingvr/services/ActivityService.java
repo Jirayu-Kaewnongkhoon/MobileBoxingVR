@@ -79,6 +79,10 @@ public class ActivityService {
                 });
     }
 
+    public DatabaseReference getGameProfile() {
+        return myRef.child("game_profile").child(userID);
+    }
+
     public int getStepCounterValue() {
         int stepCounterValue = StepCounter.getInstance(context).getStepCounterValue();
 
