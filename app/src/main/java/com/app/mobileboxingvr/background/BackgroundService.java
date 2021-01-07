@@ -1,4 +1,4 @@
-package com.app.mobileboxingvr.services;
+package com.app.mobileboxingvr.background;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;

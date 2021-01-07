@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.app.mobileboxingvr.ui.login.LoginActivity;
-import com.app.mobileboxingvr.services.BackgroundService;
+import com.app.mobileboxingvr.background.BackgroundService;
 import com.app.mobileboxingvr.services.UserService;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,11 +50,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onStartJobClick(View view) {
-        BackgroundService.getInstance(this).startService();
+        BackgroundService.getInstance(getApplicationContext()).startService();
     }
 
     public void onStopJobClick(View view) {
-        BackgroundService.getInstance(this).stopService();
+        BackgroundService.getInstance(getApplicationContext()).stopService();
     }
 
 }
