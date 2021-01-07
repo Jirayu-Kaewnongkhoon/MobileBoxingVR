@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.app.mobileboxingvr.login.LoginActivity;
+import com.app.mobileboxingvr.ui.login.LoginActivity;
 import com.app.mobileboxingvr.services.BackgroundService;
 import com.app.mobileboxingvr.services.UserService;
 
