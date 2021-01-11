@@ -27,6 +27,7 @@ public class ActivityService {
     private FirebaseDatabase database;
     private DatabaseReference myRef;
 
+    private StepCounter stepCounter;
     private UserService user;
     private String userID;
 
@@ -40,6 +41,7 @@ public class ActivityService {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
 
+        stepCounter = StepCounter.getInstance(context);
         user = UserService.getInstance();
         userID = user.getCurrentUser().getUid();
     }
@@ -84,7 +86,7 @@ public class ActivityService {
     }
 
     public int getStepCounterValue() {
-        int stepCounterValue = StepCounter.getInstance(context).getStepCounterValue();
+        int stepCounterValue = stepCounter.getStepCounterValue();
 
         return stepCounterValue;
     }
@@ -104,12 +106,14 @@ public class ActivityService {
 
         UserActivity newActivityValue = new UserActivity(getTimestamp(), TIME_SPENT, getStepCounterValue());
 
+        Log.d(TAG, "calculateData: " + newActivityValue.toString());
+
         // save new activity log
         myRef.child("user_activity").child(userID).push().setValue(newActivityValue);
 
 
-        gameProfile.setStrength(gameProfile.getStrength() + newActivityValue.getStepCounter());
-        gameProfile.setStamina(gameProfile.getStamina() + (double)(newActivityValue.getStepCounter()/TIME_SPENT));
+        gameProfile.setStrengthExp(gameProfile.getStrengthExp() + newActivityValue.getStepCounter());
+        gameProfile.setStaminaExp(gameProfile.getStaminaExp() + (int)(newActivityValue.getStepCounter()/TIME_SPENT));
 
         gameProfile.setTimestamp(newActivityValue.getTimestamp());
 

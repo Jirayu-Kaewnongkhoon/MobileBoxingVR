@@ -2,42 +2,80 @@ package com.app.mobileboxingvr.models;
 
 public class GameProfile {
 
-    private double strength;
-    private double stamina;
-    private double health;
+    private int strengthLevel;
+    private int strengthExp;
+    private int staminaLevel;
+    private int staminaExp;
+    private int health;
+    private int damage;
+    private int defense;
     private String timestamp;
 
     public GameProfile() {}
 
-    public GameProfile(double strength, double stamina, double health, String timestamp) {
-        this.strength = strength;
-        this.stamina = stamina;
+    public GameProfile(int strengthExp, int staminaExp, int health, int damage, int defense, String timestamp) {
+        this.strengthExp = strengthExp;
+        this.staminaExp = staminaExp;
         this.health = health;
+        this.damage = damage;
+        this.defense = defense;
         this.timestamp = timestamp;
     }
 
-    public double getStrength() {
-        return strength;
+    public int getStrengthLevel() {
+        return strengthLevel;
     }
 
-    public void setStrength(double strength) {
-        this.strength = strength;
+    public void setStrengthLevel(int strengthLevel) {
+        this.strengthLevel = strengthLevel;
     }
 
-    public double getStamina() {
-        return stamina;
+    public int getStrengthExp() {
+        return strengthExp;
     }
 
-    public void setStamina(double stamina) {
-        this.stamina = stamina;
+    public void setStrengthExp(int strengthExp) {
+        this.strengthExp = strengthExp;
     }
 
-    public double getHealth() {
+    public int getStaminaLevel() {
+        return staminaLevel;
+    }
+
+    public void setStaminaLevel(int staminaLevel) {
+        this.staminaLevel = staminaLevel;
+    }
+
+    public int getStaminaExp() {
+        return staminaExp;
+    }
+
+    public void setStaminaExp(int staminaExp) {
+        this.staminaExp = staminaExp;
+    }
+
+    public int getHealth() {
         return health;
     }
 
-    public void setHealth(double health) {
+    public void setHealth(int health) {
         this.health = health;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public int getDefense() {
+        return defense;
+    }
+
+    public void setDefense(int defense) {
+        this.defense = defense;
     }
 
     public String getTimestamp() {
@@ -51,9 +89,13 @@ public class GameProfile {
     @Override
     public String toString() {
         return "GameProfile{" +
-                "strength=" + strength +
-                ", stamina=" + stamina +
+                "strengthLevel=" + strengthLevel +
+                ", strengthExp=" + strengthExp +
+                ", staminaLevel=" + staminaLevel +
+                ", staminaExp=" + staminaExp +
                 ", health=" + health +
+                ", damage=" + damage +
+                ", defense=" + defense +
                 ", timestamp='" + timestamp + '\'' +
                 '}';
     }

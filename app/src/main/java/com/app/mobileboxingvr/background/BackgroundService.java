@@ -1,27 +1,27 @@
 package com.app.mobileboxingvr.background;
 
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.app.mobileboxingvr.jobs.ActivityJob;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
+import com.app.mobileboxingvr.works.ActivityWork;
+
+import java.util.concurrent.TimeUnit;
 
 public class BackgroundService {
 
     private static BackgroundService instance;
 
-    private JobScheduler scheduler;
-
-    private final int JOB_UNIQUE_ID = 123;
+    private PeriodicWorkRequest request;
 
     private final Context context;
 
     private BackgroundService(Context context) {
         this.context = context;
 
-        scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        request = new PeriodicWorkRequest.Builder(ActivityWork.class, 15, TimeUnit.MINUTES).build();
     }
 
     public static BackgroundService getInstance(Context context) {
@@ -32,19 +32,14 @@ public class BackgroundService {
     }
 
     public void startService() {
-        ComponentName componentName = new ComponentName(context, ActivityJob.class);
-        JobInfo info = new JobInfo.Builder(JOB_UNIQUE_ID, componentName)
-                .setPersisted(true)
-                .setPeriodic(15 * 60 * 1000)
-                .build();
-
-        scheduler.schedule(info);
+        WorkManager.getInstance(context).enqueue(request);
 
         Toast.makeText(context, "Job started..", Toast.LENGTH_LONG).show();
     }
 
     public void stopService() {
-        scheduler.cancel(JOB_UNIQUE_ID);
+        WorkManager.getInstance(context).cancelWorkById(request.getId());
+
         Toast.makeText(context, "Job stopped..", Toast.LENGTH_LONG).show();
     }
 }

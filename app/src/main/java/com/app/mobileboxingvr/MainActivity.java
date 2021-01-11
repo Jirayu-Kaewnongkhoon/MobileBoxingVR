@@ -42,20 +42,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        if (user.getCurrentUser() == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-        }
-
-        if (StepCounter.getInstance(this).getStepSensor() == null) {
-
-            // app cannot do background task
-            btnStart.setClickable(false);
-            btnStop.setClickable(false);
-
-            Log.d("MAIN", "onStart: Not Clickable");
-
-        }
+//        if (user.getCurrentUser() == null) {
+//            startActivity(new Intent(this, LoginActivity.class));
+//            finish();
+//        }
+//
+//        if (StepCounter.getInstance(this).getStepSensor() == null) {
+//
+//            // app cannot do background task
+//            btnStart.setClickable(false);
+//            btnStop.setClickable(false);
+//
+//            Log.d("MAIN", "onStart: Not Clickable");
+//
+//        }
 
         displayPlayerStatus();
     }
@@ -74,7 +74,14 @@ public class MainActivity extends AppCompatActivity {
         activity.getGameProfile().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                playerStatus.setText(snapshot.getValue(GameProfile.class).toString());
+                GameProfile gameProfile = snapshot.getValue(GameProfile.class);
+
+                if (gameProfile != null) {
+                    playerStatus.setText(gameProfile.toString());
+                    Log.d("MAIN", "onDataChange: " + gameProfile.toString());
+                } else {
+                    playerStatus.setText("NEW PLAYER");
+                }
             }
 
             @Override
