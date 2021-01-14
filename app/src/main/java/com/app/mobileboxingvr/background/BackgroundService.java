@@ -3,6 +3,9 @@ package com.app.mobileboxingvr.background;
 import android.content.Context;
 import android.widget.Toast;
 
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
@@ -14,14 +17,12 @@ public class BackgroundService {
 
     private static BackgroundService instance;
 
-    private PeriodicWorkRequest request;
+    private Context context;
 
-    private final Context context;
+    private final String WORK_NAME = "GAME_PROFILE";
 
     private BackgroundService(Context context) {
         this.context = context;
-
-        request = new PeriodicWorkRequest.Builder(ActivityWork.class, 15, TimeUnit.MINUTES).build();
     }
 
     public static BackgroundService getInstance(Context context) {
@@ -32,14 +33,33 @@ public class BackgroundService {
     }
 
     public void startService() {
-        WorkManager.getInstance(context).enqueue(request);
+        WorkManager.getInstance(context)
+                .enqueueUniquePeriodicWork(
+                        WORK_NAME,
+                        ExistingPeriodicWorkPolicy.KEEP,
+                        getPeriodicWorkRequest()
+                );
 
         Toast.makeText(context, "Job started..", Toast.LENGTH_LONG).show();
     }
 
     public void stopService() {
-        WorkManager.getInstance(context).cancelWorkById(request.getId());
+        WorkManager.getInstance(context).cancelAllWork();
 
         Toast.makeText(context, "Job stopped..", Toast.LENGTH_LONG).show();
+    }
+
+    private PeriodicWorkRequest getPeriodicWorkRequest() {
+        return new PeriodicWorkRequest.Builder(ActivityWork.class, 15, TimeUnit.MINUTES)
+                .addTag(WORK_NAME)
+//                .setConstraints(getConstraints())
+                .build();
+    }
+
+    private Constraints getConstraints() {
+        // isNecessary?
+        return new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
     }
 }

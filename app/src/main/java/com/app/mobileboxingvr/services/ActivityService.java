@@ -28,6 +28,7 @@ public class ActivityService {
     private DatabaseReference myRef;
 
     private StepCounter stepCounter;
+    private GameService game;
     private UserService user;
     private String userID;
 
@@ -39,9 +40,10 @@ public class ActivityService {
         this.context = context;
 
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference();
+        myRef = database.getReference("user_activity");
 
         stepCounter = StepCounter.getInstance(context);
+        game = GameService.getInstance();
         user = UserService.getInstance();
         userID = user.getCurrentUser().getUid();
     }
@@ -53,42 +55,16 @@ public class ActivityService {
         return instance;
     }
 
-    public void updateGameProfile() {
-
-        calculateData();
-
-        myRef.child("game_profile").child(userID).setValue(gameProfile);
-        Log.d(TAG, "updateGameProfile: " + gameProfile.toString());
-    }
-
-    public void loadGameProfile() {
-        myRef.child("game_profile").child(userID)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        gameProfile = dataSnapshot.getValue(GameProfile.class);
-                        Log.d(TAG, "loadGameProfile: " + (gameProfile != null ? gameProfile.toString() : "NULL"));
-
-                        if (gameProfile == null) {
-                            gameProfile = new GameProfile();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        // Failed to read value
-                    }
-                });
-    }
-
-    public DatabaseReference getGameProfile() {
-        return myRef.child("game_profile").child(userID);
-    }
-
     public int getStepCounterValue() {
         int stepCounterValue = stepCounter.getStepCounterValue();
 
         return stepCounterValue;
+    }
+
+    public int getTimeSpent() {
+        // TODO : define time spent for 1 interval activity
+
+        return TIME_SPENT;
     }
 
     public String getTimestamp() {
@@ -102,20 +78,7 @@ public class ActivityService {
         return timestamp;
     }
 
-    public void calculateData() {
-
-        UserActivity newActivityValue = new UserActivity(getTimestamp(), TIME_SPENT, getStepCounterValue());
-
-        Log.d(TAG, "calculateData: " + newActivityValue.toString());
-
-        // save new activity log
-        myRef.child("user_activity").child(userID).push().setValue(newActivityValue);
-
-
-        gameProfile.setStrengthExp(gameProfile.getStrengthExp() + newActivityValue.getStepCounter());
-        gameProfile.setStaminaExp(gameProfile.getStaminaExp() + (int)(newActivityValue.getStepCounter()/TIME_SPENT));
-
-        gameProfile.setTimestamp(newActivityValue.getTimestamp());
-
+    public void saveUserActivity(UserActivity userActivity) {
+        myRef.child(userID).push().setValue(userActivity);
     }
 }
