@@ -1,6 +1,7 @@
 package com.app.mobileboxingvr.services;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.app.mobileboxingvr.helpers.StepCounter;
@@ -20,6 +21,9 @@ public class ActivityService {
 
     private static final String TAG = "ActivityService";
 
+    private final String SHARED_PREFS = "UserActivity";
+    private final String CURRENT_STEP_COUNTER_VALUE = "CurrentStepCounterValue";
+
     private static ActivityService instance;
 
     private Context context;
@@ -28,11 +32,8 @@ public class ActivityService {
     private DatabaseReference myRef;
 
     private StepCounter stepCounter;
-    private GameService game;
     private UserService user;
     private String userID;
-
-    private GameProfile gameProfile;
 
     private final int TIME_SPENT = 60;
 
@@ -43,7 +44,6 @@ public class ActivityService {
         myRef = database.getReference("user_activity");
 
         stepCounter = StepCounter.getInstance(context);
-        game = GameService.getInstance();
         user = UserService.getInstance();
         userID = user.getCurrentUser().getUid();
     }
@@ -56,9 +56,17 @@ public class ActivityService {
     }
 
     public int getStepCounterValue() {
-        int stepCounterValue = stepCounter.getStepCounterValue();
+        int currentValue = stepCounter.getStepCounterValue();
 
-        return stepCounterValue;
+        SharedPreferences pref = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        int previousValue = pref.getInt(CURRENT_STEP_COUNTER_VALUE, 0);
+        int diff = currentValue - previousValue;
+
+        Log.d(TAG, "getStepCounterValue: prev => " + previousValue + ", current " + currentValue);
+
+        saveCurrentStepCounterValue(currentValue);
+
+        return diff;
     }
 
     public int getTimeSpent() {
@@ -80,5 +88,14 @@ public class ActivityService {
 
     public void saveUserActivity(UserActivity userActivity) {
         myRef.child(userID).push().setValue(userActivity);
+    }
+
+    private void saveCurrentStepCounterValue(int stepCounterValue) {
+        SharedPreferences pref = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+
+        // keep current value
+        editor.putInt(CURRENT_STEP_COUNTER_VALUE, stepCounterValue);
+        editor.apply();
     }
 }
