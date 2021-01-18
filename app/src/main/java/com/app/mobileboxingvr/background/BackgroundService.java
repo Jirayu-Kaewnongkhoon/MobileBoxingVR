@@ -50,7 +50,9 @@ public class BackgroundService {
     }
 
     private PeriodicWorkRequest getPeriodicWorkRequest() {
+        // to fix new initial step counter when app close => setInitialDelay for running first work after close app
         return new PeriodicWorkRequest.Builder(ActivityWork.class, 15, TimeUnit.MINUTES)
+                .setInitialDelay(5, TimeUnit.MINUTES)
                 .addTag(WORK_NAME)
 //                .setConstraints(getConstraints())
                 .build();
