@@ -26,6 +26,8 @@ public class ActivityWork extends Worker {
 
     private static final String TAG = "ActivityWork";
 
+    private final int DEFAULT_VALUE = -1;
+
     private GameService game;
 
     private GameProfile gameProfile;
@@ -72,11 +74,15 @@ public class ActivityWork extends Worker {
     private void loadUserActivity() {
         ActivityService activity = ActivityService.getInstance(getApplicationContext());
 
-        newActivityValue = new UserActivity(
-                activity.getTimestamp(),
-                activity.getTimeSpent(),
-                activity.getStepCounterValue()
-        );
+        String timestamp = activity.getTimestamp();
+        int timeSpent = activity.getTimeSpent();
+        int stepCounter = activity.getStepCounterValue();
+
+        if (stepCounter == DEFAULT_VALUE && timeSpent == DEFAULT_VALUE) {
+            return;
+        }
+
+        newActivityValue = new UserActivity(timestamp, timeSpent, stepCounter);
 
         Log.d(TAG, "loadUserActivity: " + newActivityValue.toString());
 

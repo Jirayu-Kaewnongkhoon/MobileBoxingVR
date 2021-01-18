@@ -19,7 +19,6 @@ public class StepCounter implements SensorEventListener {
 
     private final String SHARED_PREFS = "UserActivity";
     private final String STEP_COUNTER_VALUE = "StepCounterValue";
-    private final String CURRENT_STEP_COUNTER_VALUE = "CurrentStepCounterValue";
 
     private static StepCounter instance;
 
@@ -65,7 +64,6 @@ public class StepCounter implements SensorEventListener {
 
         // TODO : if device reboot, need to return 0 not previousVal (may be use previousVal)
 
-        // TODO : when sensor initialize, need to return ...?
         // save every trigger value to fix when initialize sensor
         editor.putInt(STEP_COUNTER_VALUE, stepCounterValue);
         editor.apply();
@@ -87,14 +85,10 @@ public class StepCounter implements SensorEventListener {
     public void onSensorChanged(SensorEvent sensorEvent) {
         int stepCounterValue = (int) sensorEvent.values[0];
 
-        // TODO : use sensor timestamp to
-        long time = sensorEvent.timestamp;
-
         // use SharedPreference to save current value
         saveEveryStepCounterValue(stepCounterValue);
 
         Log.d(TAG, "onSensorChanged: step => " + stepCounterValue);
-        Log.d(TAG, "onSensorChanged: time => " + time);
     }
 
     @Override
