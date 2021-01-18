@@ -1,27 +1,28 @@
 package com.app.mobileboxingvr.background;
 
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.app.mobileboxingvr.jobs.ActivityJob;
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
+import com.app.mobileboxingvr.works.ActivityWork;
+
+import java.util.concurrent.TimeUnit;
 
 public class BackgroundService {
 
     private static BackgroundService instance;
 
-    private JobScheduler scheduler;
+    private Context context;
 
-    private final int JOB_UNIQUE_ID = 123;
-
-    private final Context context;
+    private final String WORK_NAME = "GAME_PROFILE";
 
     private BackgroundService(Context context) {
         this.context = context;
-
-        scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
     }
 
     public static BackgroundService getInstance(Context context) {
@@ -32,19 +33,35 @@ public class BackgroundService {
     }
 
     public void startService() {
-        ComponentName componentName = new ComponentName(context, ActivityJob.class);
-        JobInfo info = new JobInfo.Builder(JOB_UNIQUE_ID, componentName)
-                .setPersisted(true)
-                .setPeriodic(15 * 60 * 1000)
-                .build();
-
-        scheduler.schedule(info);
+        WorkManager.getInstance(context)
+                .enqueueUniquePeriodicWork(
+                        WORK_NAME,
+                        ExistingPeriodicWorkPolicy.KEEP,
+                        getPeriodicWorkRequest()
+                );
 
         Toast.makeText(context, "Job started..", Toast.LENGTH_LONG).show();
     }
 
     public void stopService() {
-        scheduler.cancel(JOB_UNIQUE_ID);
+        WorkManager.getInstance(context).cancelAllWork();
+
         Toast.makeText(context, "Job stopped..", Toast.LENGTH_LONG).show();
+    }
+
+    private PeriodicWorkRequest getPeriodicWorkRequest() {
+        // to fix new initial step counter when app close => setInitialDelay for running first work after close app
+        return new PeriodicWorkRequest.Builder(ActivityWork.class, 15, TimeUnit.MINUTES)
+                .setInitialDelay(5, TimeUnit.MINUTES)
+                .addTag(WORK_NAME)
+//                .setConstraints(getConstraints())
+                .build();
+    }
+
+    private Constraints getConstraints() {
+        // isNecessary?
+        return new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
     }
 }

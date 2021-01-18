@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.app.mobileboxingvr.helpers.StepCounter;
 import com.app.mobileboxingvr.models.GameProfile;
-import com.app.mobileboxingvr.services.ActivityService;
+import com.app.mobileboxingvr.services.GameService;
 import com.app.mobileboxingvr.ui.login.LoginActivity;
 import com.app.mobileboxingvr.background.BackgroundService;
 import com.app.mobileboxingvr.services.UserService;
@@ -22,8 +22,10 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
     private UserService user;
-    private ActivityService activity;
+    private GameService game;
 
     private TextView username, playerStatus;
     private Button btnStart, btnStop;
@@ -42,20 +44,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        if (user.getCurrentUser() == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-        }
-
-        if (StepCounter.getInstance(this).getStepSensor() == null) {
-
-            // app cannot do background task
-            btnStart.setClickable(false);
-            btnStop.setClickable(false);
-
-            Log.d("MAIN", "onStart: Not Clickable");
-
-        }
+//        if (user.getCurrentUser() == null) {
+//            startActivity(new Intent(this, LoginActivity.class));
+//            finish();
+//        }
+//
+//        if (StepCounter.getInstance(this).getStepSensor() == null) {
+//
+//            // app cannot do background task
+//            btnStart.setClickable(false);
+//            btnStop.setClickable(false);
+//
+//            Log.d("MAIN", "onStart: Not Clickable");
+//
+//        }
 
         displayPlayerStatus();
     }
@@ -67,25 +69,33 @@ public class MainActivity extends AppCompatActivity {
         btnStop = findViewById(R.id.btnStop);
 
         user = UserService.getInstance();
-        activity = ActivityService.getInstance(getApplicationContext());
+        game = GameService.getInstance();
     }
 
     private void displayPlayerStatus() {
-        activity.getGameProfile().addValueEventListener(new ValueEventListener() {
+        game.getGameProfile().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                playerStatus.setText(snapshot.getValue(GameProfile.class).toString());
+                GameProfile gameProfile = snapshot.getValue(GameProfile.class);
+
+                if (gameProfile != null) {
+                    playerStatus.setText(gameProfile.toString());
+                    Log.d(TAG, "onDataChange: " + gameProfile.toString());
+                } else {
+                    playerStatus.setText("NEW PLAYER");
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.d(TAG, "onCancelled: " + error.getMessage());
             }
         });
     }
 
     public void onLogoutClick(View view) {
         user.logout();
+        BackgroundService.getInstance(getApplicationContext()).stopService();
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }

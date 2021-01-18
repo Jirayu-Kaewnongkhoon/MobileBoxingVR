@@ -1,24 +1,28 @@
 package com.app.mobileboxingvr.services;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.app.mobileboxingvr.helpers.StepCounter;
-import com.app.mobileboxingvr.models.GameProfile;
 import com.app.mobileboxingvr.models.UserActivity;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 public class ActivityService {
 
     private static final String TAG = "ActivityService";
+
+    private final String SHARED_PREFS = "UserActivity";
+    private final String CURRENT_STEP_COUNTER_VALUE = "CurrentStepCounterValue";
+    private final String CURRENT_TIMESTAMP_VALUE = "CurrentTimestampValue";
+    private final long MILLI_SECOND = TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES);
+    private final int DEFAULT_VALUE = -1;
 
     private static ActivityService instance;
 
@@ -27,19 +31,17 @@ public class ActivityService {
     private FirebaseDatabase database;
     private DatabaseReference myRef;
 
+    private StepCounter stepCounter;
     private UserService user;
     private String userID;
-
-    private GameProfile gameProfile;
-
-    private final int TIME_SPENT = 60;
 
     private ActivityService(Context context) {
         this.context = context;
 
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference();
+        myRef = database.getReference("user_activity");
 
+        stepCounter = StepCounter.getInstance(context);
         user = UserService.getInstance();
         userID = user.getCurrentUser().getUid();
     }
@@ -51,42 +53,42 @@ public class ActivityService {
         return instance;
     }
 
-    public void updateGameProfile() {
-
-        calculateData();
-
-        myRef.child("game_profile").child(userID).setValue(gameProfile);
-        Log.d(TAG, "updateGameProfile: " + gameProfile.toString());
-    }
-
-    public void loadGameProfile() {
-        myRef.child("game_profile").child(userID)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        gameProfile = dataSnapshot.getValue(GameProfile.class);
-                        Log.d(TAG, "loadGameProfile: " + (gameProfile != null ? gameProfile.toString() : "NULL"));
-
-                        if (gameProfile == null) {
-                            gameProfile = new GameProfile();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        // Failed to read value
-                    }
-                });
-    }
-
-    public DatabaseReference getGameProfile() {
-        return myRef.child("game_profile").child(userID);
-    }
-
     public int getStepCounterValue() {
-        int stepCounterValue = StepCounter.getInstance(context).getStepCounterValue();
+        int currentValue = stepCounter.getStepCounterValue();
 
-        return stepCounterValue;
+        SharedPreferences pref = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        int previousValue = pref.getInt(CURRENT_STEP_COUNTER_VALUE, -1);
+
+        saveCurrentStepCounterValue(currentValue);
+        
+        Log.d(TAG, "getStepCounterValue: prev => " + previousValue + ", current " + currentValue);
+
+        if (previousValue == DEFAULT_VALUE) {
+            return DEFAULT_VALUE;
+        }
+
+        int diff = currentValue - previousValue;
+
+        return diff;
+    }
+
+    public int getTimeSpent() {
+        long currentValue = System.currentTimeMillis();
+
+        SharedPreferences pref = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        long previousValue = pref.getLong(CURRENT_TIMESTAMP_VALUE, -1);
+
+        saveCurrentTimestampValue(currentValue);
+
+        Log.d(TAG, "getTimeSpent: prev => " + previousValue + ", current " + currentValue);
+
+        if (previousValue == DEFAULT_VALUE) {
+            return DEFAULT_VALUE;
+        }
+
+        int timeSpent = Math.round((currentValue - previousValue) / MILLI_SECOND);
+
+        return timeSpent;
     }
 
     public String getTimestamp() {
@@ -100,18 +102,25 @@ public class ActivityService {
         return timestamp;
     }
 
-    public void calculateData() {
+    public void saveUserActivity(UserActivity userActivity) {
+        myRef.child(userID).push().setValue(userActivity);
+    }
 
-        UserActivity newActivityValue = new UserActivity(getTimestamp(), TIME_SPENT, getStepCounterValue());
+    private void saveCurrentStepCounterValue(int stepCounterValue) {
+        SharedPreferences pref = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
 
-        // save new activity log
-        myRef.child("user_activity").child(userID).push().setValue(newActivityValue);
+        // keep current value
+        editor.putInt(CURRENT_STEP_COUNTER_VALUE, stepCounterValue);
+        editor.apply();
+    }
 
+    public void saveCurrentTimestampValue(long timestamp) {
+        SharedPreferences pref = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
 
-        gameProfile.setStrength(gameProfile.getStrength() + newActivityValue.getStepCounter());
-        gameProfile.setStamina(gameProfile.getStamina() + (double)(newActivityValue.getStepCounter()/TIME_SPENT));
-
-        gameProfile.setTimestamp(newActivityValue.getTimestamp());
-
+        // keep current value
+        editor.putLong(CURRENT_TIMESTAMP_VALUE, timestamp);
+        editor.apply();
     }
 }
