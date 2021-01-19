@@ -24,7 +24,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-public class GameProfileFragment extends Fragment {
+public class GameProfileFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "GameProfileFragment";
 
@@ -40,13 +40,11 @@ public class GameProfileFragment extends Fragment {
         View v =  inflater.inflate(R.layout.fragment_gameprofile, container, false);
 
         initializeView(v);
+        setupOnClick();
 
         username.setText(user.getCurrentUser().getDisplayName());
 
         displayPlayerStatus();
-        onLogoutClick();
-        onStartJobClick();
-        onStopJobClick();
 
         return v;
     }
@@ -60,6 +58,12 @@ public class GameProfileFragment extends Fragment {
 
         user = UserService.getInstance();
         game = GameService.getInstance();
+    }
+
+    private void setupOnClick() {
+        btnLogout.setOnClickListener(this);
+        btnStart.setOnClickListener(this);
+        btnStop.setOnClickListener(this);
     }
 
     private void displayPlayerStatus() {
@@ -84,32 +88,32 @@ public class GameProfileFragment extends Fragment {
     }
 
     public void onLogoutClick() {
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                user.logout();
-                BackgroundService.getInstance(getActivity()).stopService();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-                getActivity().finish();
-            }
-        });
+        user.logout();
+        BackgroundService.getInstance(getActivity()).stopService();
+        startActivity(new Intent(getActivity(), LoginActivity.class));
+        getActivity().finish();
     }
 
     public void onStartJobClick() {
-        btnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BackgroundService.getInstance(getActivity()).startService();
-            }
-        });
+        BackgroundService.getInstance(getActivity()).startService();
     }
 
     public void onStopJobClick() {
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BackgroundService.getInstance(getActivity()).stopService();
-            }
-        });
+        BackgroundService.getInstance(getActivity()).stopService();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnLogout:
+                onLogoutClick();
+                break;
+            case R.id.btnStart:
+                onStartJobClick();
+                break;
+            case R.id.btnStop:
+                onStopJobClick();
+                break;
+        }
     }
 }
