@@ -2,33 +2,19 @@ package com.app.mobileboxingvr;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.view.MenuItem;
 
-import com.app.mobileboxingvr.helpers.StepCounter;
-import com.app.mobileboxingvr.models.GameProfile;
-import com.app.mobileboxingvr.services.GameService;
-import com.app.mobileboxingvr.ui.login.LoginActivity;
-import com.app.mobileboxingvr.background.BackgroundService;
-import com.app.mobileboxingvr.services.UserService;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+import com.app.mobileboxingvr.ui.activityhistory.ActivityHistoryFragment;
+import com.app.mobileboxingvr.ui.gameprofile.GameProfileFragment;
+import com.app.mobileboxingvr.ui.setting.SettingFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
-
-    private UserService user;
-    private GameService game;
-
-    private TextView username, playerStatus;
-    private Button btnStart, btnStop;
+    private BottomNavigationView nav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initializeView();
+        setupNav();
 
-        username.setText(user.getCurrentUser().getDisplayName());
     }
 
     @Override
@@ -59,53 +45,41 @@ public class MainActivity extends AppCompatActivity {
 //
 //        }
 
-        displayPlayerStatus();
     }
 
     private void initializeView() {
-        username = findViewById(R.id.tvUsername);
-        playerStatus = findViewById(R.id.tvPlayerStatus);
-        btnStart = findViewById(R.id.btnStart);
-        btnStop = findViewById(R.id.btnStop);
-
-        user = UserService.getInstance();
-        game = GameService.getInstance();
+        nav = findViewById(R.id.bottom_navigation);
     }
 
-    private void displayPlayerStatus() {
-        game.getGameProfile().addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                GameProfile gameProfile = snapshot.getValue(GameProfile.class);
+    private void setupNav() {
+        nav.setOnNavigationItemSelectedListener(navListener);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new GameProfileFragment()).commit();
+    }
 
-                if (gameProfile != null) {
-                    playerStatus.setText(gameProfile.toString());
-                    Log.d(TAG, "onDataChange: " + gameProfile.toString());
-                } else {
-                    playerStatus.setText("NEW PLAYER");
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selected = null;
+
+                    switch (item.getItemId()) {
+                        case R.id.nav_home:
+                            selected = new GameProfileFragment();
+                            break;
+                        case R.id.nav_history:
+                            selected = new ActivityHistoryFragment();
+                            break;
+                        case R.id.nav_setting:
+                            selected = new SettingFragment();
+                            break;
+                    }
+
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, selected).commit();
+
+                    return true;
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, "onCancelled: " + error.getMessage());
-            }
-        });
-    }
-
-    public void onLogoutClick(View view) {
-        user.logout();
-        BackgroundService.getInstance(getApplicationContext()).stopService();
-        startActivity(new Intent(this, LoginActivity.class));
-        finish();
-    }
-
-    public void onStartJobClick(View view) {
-        BackgroundService.getInstance(getApplicationContext()).startService();
-    }
-
-    public void onStopJobClick(View view) {
-        BackgroundService.getInstance(getApplicationContext()).stopService();
-    }
+            };
 
 }
