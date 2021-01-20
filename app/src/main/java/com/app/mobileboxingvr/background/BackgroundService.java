@@ -9,6 +9,7 @@ import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import com.app.mobileboxingvr.constants.MyConstants;
 import com.app.mobileboxingvr.works.ActivityWork;
 
 import java.util.concurrent.TimeUnit;
@@ -18,8 +19,6 @@ public class BackgroundService {
     private static BackgroundService instance;
 
     private Context context;
-
-    private final String WORK_NAME = "GAME_PROFILE";
 
     private BackgroundService(Context context) {
         this.context = context;
@@ -35,7 +34,7 @@ public class BackgroundService {
     public void startService() {
         WorkManager.getInstance(context)
                 .enqueueUniquePeriodicWork(
-                        WORK_NAME,
+                        MyConstants.WORK_NAME,
                         ExistingPeriodicWorkPolicy.KEEP,
                         getPeriodicWorkRequest()
                 );
@@ -53,7 +52,7 @@ public class BackgroundService {
         // to fix new initial step counter when app close => setInitialDelay for running first work after close app
         return new PeriodicWorkRequest.Builder(ActivityWork.class, 15, TimeUnit.MINUTES)
                 .setInitialDelay(5, TimeUnit.MINUTES)
-                .addTag(WORK_NAME)
+                .addTag(MyConstants.WORK_NAME)
 //                .setConstraints(getConstraints())
                 .build();
     }

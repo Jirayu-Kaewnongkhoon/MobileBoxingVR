@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.app.mobileboxingvr.MainActivity;
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.background.BackgroundService;
 import com.app.mobileboxingvr.models.GameProfile;

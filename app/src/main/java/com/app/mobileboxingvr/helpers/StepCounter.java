@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import com.app.mobileboxingvr.constants.MyConstants;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -16,9 +17,6 @@ import java.time.LocalTime;
 public class StepCounter implements SensorEventListener {
 
     private static final String TAG = "StepCounter";
-
-    private final String SHARED_PREFS = "UserActivity";
-    private final String STEP_COUNTER_VALUE = "StepCounterValue";
 
     private static StepCounter instance;
 
@@ -59,13 +57,13 @@ public class StepCounter implements SensorEventListener {
     }
 
     private void saveEveryStepCounterValue(int stepCounterValue) {
-        SharedPreferences pref = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences pref = context.getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
         // TODO : if device reboot, need to return 0 not previousVal (may be use previousVal)
 
         // save every trigger value to fix when initialize sensor
-        editor.putInt(STEP_COUNTER_VALUE, stepCounterValue);
+        editor.putInt(MyConstants.STEP_COUNTER_VALUE, stepCounterValue);
         editor.apply();
     }
 
@@ -76,9 +74,9 @@ public class StepCounter implements SensorEventListener {
     public int getStepCounterValue() {
         // use SharedPreference to get current trigger value
         // TODO : Using SharedPreference may not be as good as you think.
-        SharedPreferences pref = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences pref = context.getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
 
-        return pref.getInt(STEP_COUNTER_VALUE, 0);
+        return pref.getInt(MyConstants.STEP_COUNTER_VALUE, 0);
     }
 
     @Override
