@@ -12,6 +12,7 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.app.mobileboxingvr.R;
+import com.app.mobileboxingvr.constants.MyConstants;
 import com.app.mobileboxingvr.models.GameProfile;
 import com.app.mobileboxingvr.models.UserActivity;
 import com.app.mobileboxingvr.services.ActivityService;
@@ -25,8 +26,6 @@ import java.time.LocalTime;
 public class ActivityWork extends Worker {
 
     private static final String TAG = "ActivityWork";
-
-    private final int DEFAULT_VALUE = -1;
 
     private GameService game;
 
@@ -78,7 +77,7 @@ public class ActivityWork extends Worker {
         int timeSpent = activity.getTimeSpent();
         int stepCounter = activity.getStepCounterValue();
 
-        if (stepCounter == DEFAULT_VALUE && timeSpent == DEFAULT_VALUE) {
+        if (stepCounter == MyConstants.DEFAULT_VALUE && timeSpent == MyConstants.DEFAULT_VALUE) {
             return;
         }
 

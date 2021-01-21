@@ -6,6 +6,10 @@ public class UserActivity {
     private int timeSpent;
     private int stepCounter;
 
+    private int strengthExp;
+    private int staminaExp;
+    private int agilityExp;
+
     public UserActivity() {}
 
     public UserActivity(String timestamp, int timeSpent, int stepCounter) {
@@ -36,6 +40,30 @@ public class UserActivity {
 
     public void setStepCounter(int stepCounter) {
         this.stepCounter = stepCounter;
+    }
+
+    public int getStrengthExp() {
+        return strengthExp;
+    }
+
+    public void setStrengthExp(int strengthExp) {
+        this.strengthExp = strengthExp;
+    }
+
+    public int getStaminaExp() {
+        return staminaExp;
+    }
+
+    public void setStaminaExp(int staminaExp) {
+        this.staminaExp = staminaExp;
+    }
+
+    public int getAgilityExp() {
+        return agilityExp;
+    }
+
+    public void setAgilityExp(int agilityExp) {
+        this.agilityExp = agilityExp;
     }
 
     @Override
