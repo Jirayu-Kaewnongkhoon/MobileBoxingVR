@@ -31,8 +31,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @Override
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
         UserActivity currentItem = list.get(position);
+
         holder.tvTitle.setText(currentItem.getTimestamp());
         holder.tvDetail.setText("Step: " + currentItem.getStepCounter() + " , Time: " + currentItem.getTimeSpent());
+        holder.tvStrengthExp.setText("Str +" + currentItem.getStrengthExp());
+        holder.tvStaminaExp.setText("Stm +" + currentItem.getStaminaExp());
+        holder.tvAgilityExp.setText("Agi +" + currentItem.getAgilityExp());
     }
 
     @Override
@@ -43,12 +47,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     public static class HistoryViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvTitle, tvDetail;
+        TextView tvStrengthExp, tvStaminaExp, tvAgilityExp;
 
         public HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
 
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvDetail = itemView.findViewById(R.id.tvDetail);
+            tvStrengthExp = itemView.findViewById(R.id.tvStrengthExp);
+            tvStaminaExp = itemView.findViewById(R.id.tvStaminaExp);
+            tvAgilityExp = itemView.findViewById(R.id.tvAgilityExp);
         }
     }
 }

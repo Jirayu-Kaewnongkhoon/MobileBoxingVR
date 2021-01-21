@@ -9,4 +9,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="recyclerViewBackground">#E5E5E5</color>
+
+    <color name="strengthColor">#F31818</color>
+    <color name="staminaColor">#186AF3</color>
+    <color name="agilityColor">#2AF318</color>
 </resources>

@@ -8,6 +8,8 @@ public class GameProfile {
     private int strengthExp;
     private int staminaLevel;
     private int staminaExp;
+    private int agilityLevel;
+    private int agilityExp;
     private int health;
     private int damage;
     private int defense;

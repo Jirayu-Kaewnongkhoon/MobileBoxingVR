@@ -38,6 +38,45 @@
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             app:layout_constraintVertical_bias="0.30" />
 
+        <TextView
+            android:id="@+id/tvStrengthExp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Str +0"
+            android:textColor="@color/strengthColor"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.91"
+            app:layout_constraintStart_toEndOf="@+id/tvTitle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.18" />
+
+        <TextView
+            android:id="@+id/tvStaminaExp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stm +0"
+            android:textColor="@color/staminaColor"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tvStrengthExp"
+            app:layout_constraintTop_toBottomOf="@+id/tvStrengthExp"
+            app:layout_constraintVertical_bias="0.034" />
+
+        <TextView
+            android:id="@+id/tvAgilityExp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:text="Agi +0"
+            android:textColor="@color/agilityColor"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tvStaminaExp"
+            app:layout_constraintTop_toBottomOf="@+id/tvStaminaExp"
+            app:layout_constraintVertical_bias="0.0" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

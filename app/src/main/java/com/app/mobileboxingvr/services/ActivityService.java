@@ -97,7 +97,11 @@ public class ActivityService {
     }
 
     public void saveUserActivity(UserActivity userActivity) {
-        myRef.child(userID).push().setValue(userActivity);
+        getUserActivity().push().setValue(userActivity);
+    }
+
+    public DatabaseReference getUserActivity() {
+        return myRef.child(userID);
     }
 
     private void saveCurrentStepCounterValue(int stepCounterValue) {

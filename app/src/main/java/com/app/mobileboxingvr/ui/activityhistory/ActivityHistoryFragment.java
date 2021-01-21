@@ -15,10 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.models.UserActivity;
-import com.app.mobileboxingvr.services.UserService;
+import com.app.mobileboxingvr.services.ActivityService;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -27,6 +26,8 @@ import java.util.List;
 public class ActivityHistoryFragment extends Fragment {
 
     private static final String TAG = "ActivityHistoryFragment";
+
+    private ActivityService activity;
 
     private RecyclerView recyclerView;
 
@@ -43,7 +44,7 @@ public class ActivityHistoryFragment extends Fragment {
     }
 
     private void loadActivityHistory() {
-        FirebaseDatabase.getInstance().getReference("user_activity").child(UserService.getInstance().getCurrentUser().getUid())
+        activity.getUserActivity()
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -67,6 +68,8 @@ public class ActivityHistoryFragment extends Fragment {
 
     private void initialView(View v) {
         recyclerView = v.findViewById(R.id.rvHistory);
+
+        activity = ActivityService.getInstance(getActivity());
     }
 
     private void recyclerViewSetup() {
