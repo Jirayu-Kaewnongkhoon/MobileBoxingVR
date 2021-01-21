@@ -93,11 +93,18 @@ public class ActivityWork extends Worker {
     private void calculateUserActivityToGameProfile() {
         // calculate Strength
         int newStrengthExp = newActivityValue.getStepCounter();
+        newActivityValue.setStrengthExp(newStrengthExp);
         gameProfile.setStrengthExp(gameProfile.getStrengthExp() + newStrengthExp);
 
         // calculate Stamina
         int newStaminaExp = newActivityValue.getStepCounter() / newActivityValue.getTimeSpent();
+        newActivityValue.setStaminaExp(newStaminaExp);
         gameProfile.setStaminaExp(gameProfile.getStaminaExp() + newStaminaExp);
+
+        // TODO : calculate Agility
+//        int newAgilityExp = 0000;
+//        newActivityValue.setStaminaExp(newAgilityExp);
+//        gameProfile.setAgilityExp(gameProfile.getAgilityExp() + newAgilityExp);
 
         // set new Timestamp
         gameProfile.setTimestamp(newActivityValue.getTimestamp());
