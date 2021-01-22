@@ -1,6 +1,9 @@
 package com.app.mobileboxingvr.ui.gameprofile;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,13 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.WorkManager;
 
 import com.app.mobileboxingvr.R;
-import com.app.mobileboxingvr.background.BackgroundService;
+import com.app.mobileboxingvr.background.BackgroundTask;
 import com.app.mobileboxingvr.models.GameProfile;
 import com.app.mobileboxingvr.services.GameService;
 import com.app.mobileboxingvr.services.UserService;
@@ -88,17 +97,95 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
 
     public void onLogoutClick() {
         user.logout();
-        BackgroundService.getInstance(getActivity()).stopService();
+        BackgroundTask.getInstance(getActivity()).stopBackgroundTask();
         startActivity(new Intent(getActivity(), LoginActivity.class));
         getActivity().finish();
     }
 
     public void onStartJobClick() {
-        BackgroundService.getInstance(getActivity()).startService();
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                    111);
+
+        } else {
+
+            BackgroundTask.getInstance(getActivity()).startBackgroundTask();
+            Log.d(TAG, "onStartJobClick: ");
+
+        }
     }
 
     public void onStopJobClick() {
-        BackgroundService.getInstance(getActivity()).stopService();
+        BackgroundTask.getInstance(getActivity()).stopBackgroundTask();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 111) {
+
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                BackgroundTask.getInstance(getActivity()).startBackgroundTask();
+                Toast.makeText(getContext(), "Permission granted!", Toast.LENGTH_LONG).show();
+
+            } else {
+
+                Toast.makeText(getContext(), "Permission denied!", Toast.LENGTH_LONG).show();
+
+            }
+
+        }
+    }
+
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            BackgroundTask.getInstance(getActivity()).startBackgroundTask();
+            Toast.makeText(getContext(), "Permission granted!", Toast.LENGTH_LONG).show();
+
+        } else {
+
+            requestPermissions();
+
+        }
+    }
+
+    private void requestPermissions() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                && ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Permission needed")
+                    .setMessage("This permission is needed because app will track your location")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ActivityCompat.requestPermissions(
+                                    getActivity(),
+                                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                                    1);
+                        }
+                    })
+                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .create().show();
+
+        } else {
+
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    1);
+
+        }
     }
 
     @Override
