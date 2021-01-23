@@ -36,6 +36,8 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
 
     private static final String TAG = "GameProfileFragment";
 
+    private final int REQUEST_CODE = 111;
+
     private UserService user;
     private GameService game;
 
@@ -108,7 +110,7 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
             ActivityCompat.requestPermissions(
                     getActivity(),
                     new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
-                    111);
+                    REQUEST_CODE);
 
         } else {
 
@@ -124,7 +126,7 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 111) {
+        if (requestCode == REQUEST_CODE) {
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -136,54 +138,6 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
                 Toast.makeText(getContext(), "Permission denied!", Toast.LENGTH_LONG).show();
 
             }
-
-        }
-    }
-
-    private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            BackgroundTask.getInstance(getActivity()).startBackgroundTask();
-            Toast.makeText(getContext(), "Permission granted!", Toast.LENGTH_LONG).show();
-
-        } else {
-
-            requestPermissions();
-
-        }
-    }
-
-    private void requestPermissions() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                && ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
-
-            new AlertDialog.Builder(getContext())
-                    .setTitle("Permission needed")
-                    .setMessage("This permission is needed because app will track your location")
-                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            ActivityCompat.requestPermissions(
-                                    getActivity(),
-                                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                                    1);
-                        }
-                    })
-                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    })
-                    .create().show();
-
-        } else {
-
-            ActivityCompat.requestPermissions(
-                    getActivity(),
-                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    1);
 
         }
     }

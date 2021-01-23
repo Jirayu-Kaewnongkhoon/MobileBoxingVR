@@ -22,4 +22,7 @@ public class MyConstants {
     public static final String ACTION_START_LOCATION_SERVICE = "StartLocationService";
     public static final String ACTION_STOP_LOCATION_SERVICE = "StopLocationService";
 
+    public static final String ACTION_START_STEP_COUNTER_SERVICE = "StartStepCounterService";
+    public static final String ACTION_STOP_STEP_COUNTER_SERVICE = "StopStepCounterService";
+
 }

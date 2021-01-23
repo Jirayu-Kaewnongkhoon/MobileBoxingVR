@@ -37,6 +37,9 @@ public class Location extends Service {
             if (locationResult != null && locationResult.getLastLocation() != null) {
                 double lat = locationResult.getLastLocation().getLatitude();
                 double lng = locationResult.getLastLocation().getLongitude();
+
+                // TODO : return location to calculate distance
+
                 Log.d(TAG, "onLocationResult: " + lat + ", " + lng);
             }
         }
@@ -45,7 +48,7 @@ public class Location extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Log.d(TAG, "onStartCommand: " + LocalTime.now());
+        Log.d(TAG, "onStartCommand: Location " + LocalTime.now());
 
         if (intent != null) {
 

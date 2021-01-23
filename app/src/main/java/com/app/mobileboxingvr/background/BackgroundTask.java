@@ -12,6 +12,7 @@ import androidx.work.WorkManager;
 
 import com.app.mobileboxingvr.constants.MyConstants;
 import com.app.mobileboxingvr.helpers.Location;
+import com.app.mobileboxingvr.helpers.StepCounter;
 import com.app.mobileboxingvr.works.ActivityWork;
 
 import java.util.concurrent.TimeUnit;
@@ -35,19 +36,21 @@ public class BackgroundTask {
 
     public void startBackgroundTask() {
         startLocationService();
+        startStepCounterService();
 
-//        WorkManager.getInstance(context)
-//                .enqueueUniquePeriodicWork(
-//                        MyConstants.WORK_NAME,
-//                        ExistingPeriodicWorkPolicy.KEEP,
-//                        getPeriodicWorkRequest()
-//                );
+        WorkManager.getInstance(context)
+                .enqueueUniquePeriodicWork(
+                        MyConstants.WORK_NAME,
+                        ExistingPeriodicWorkPolicy.KEEP,
+                        getPeriodicWorkRequest()
+                );
 
         Toast.makeText(context, "Job started..", Toast.LENGTH_LONG).show();
     }
 
     public void stopBackgroundTask() {
         stopLocationService();
+        stopStepCounterService();
 
         WorkManager.getInstance(context).cancelAllWork();
 
@@ -68,7 +71,22 @@ public class BackgroundTask {
         Toast.makeText(context, "Location service stopped", Toast.LENGTH_SHORT).show();
     }
 
+    private void startStepCounterService() {
+        Intent intent = new Intent(context, StepCounter.class);
+        intent.setAction(MyConstants.ACTION_START_STEP_COUNTER_SERVICE);
+        context.startService(intent);
+        Toast.makeText(context, "StepCounter service started", Toast.LENGTH_SHORT).show();
+    }
+
+    private void stopStepCounterService() {
+        Intent intent = new Intent(context, StepCounter.class);
+        intent.setAction(MyConstants.ACTION_STOP_STEP_COUNTER_SERVICE);
+        context.startService(intent);
+        Toast.makeText(context, "StepCounter service stopped", Toast.LENGTH_SHORT).show();
+    }
+
     private PeriodicWorkRequest getPeriodicWorkRequest() {
+        // TODO : set delay maybe not necessary
         // to fix new initial step counter when app close => setInitialDelay for running first work after close app
         return new PeriodicWorkRequest.Builder(ActivityWork.class, 15, TimeUnit.MINUTES)
 //                .setInitialDelay(5, TimeUnit.MINUTES)

@@ -1,51 +1,75 @@
 package com.app.mobileboxingvr.helpers;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
+import android.os.IBinder;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+
+import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.constants.MyConstants;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.time.LocalTime;
 
-public class StepCounter implements SensorEventListener {
+public class StepCounter extends Service implements SensorEventListener {
 
     private static final String TAG = "StepCounter";
-
-    private static StepCounter instance;
-
-    private Context context;
 
     private SensorManager sensorManager;
     private Sensor stepSensor;
 
-    private StepCounter(Context context) {
-        this.context = context;
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
-        initializeSensor();
-        test();
-    }
+        Log.d(TAG, "onStartCommand: StepCounter " + LocalTime.now());
 
-    private void test () {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.child("step_counter").push().setValue(LocalTime.now());
-    }
+        if (intent != null) {
 
-    public static StepCounter getInstance(Context context) {
-        if (instance == null) {
-            instance = new StepCounter(context);
+            String action = intent.getAction();
+
+            if (action != null) {
+
+                if (action.equals(MyConstants.ACTION_START_STEP_COUNTER_SERVICE)) {
+
+                    startStepCounterService();
+
+                } else if (action.equals(MyConstants.ACTION_STOP_STEP_COUNTER_SERVICE)) {
+
+                    stopStepCounterService();
+
+                }
+            }
         }
-        return instance;
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void startStepCounterService() {
+        initializeSensor();
+
+        startForeground(111, createNotification().build());
+    }
+
+    private void stopStepCounterService() {
+        sensorManager.unregisterListener(this, stepSensor);
+        stopForeground(true);
+        stopSelf();
     }
 
     private void initializeSensor() {
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) getApplicationContext().getSystemService(Context.SENSOR_SERVICE);
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         if (stepSensor != null){
@@ -56,8 +80,50 @@ public class StepCounter implements SensorEventListener {
         }
     }
 
+    private NotificationCompat.Builder createNotification() {
+        String channelId = "step_counter_notification_channel";
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Intent resultIntent = new Intent();
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                getApplicationContext(),
+                0,
+                resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        NotificationCompat.Builder builder = new NotificationCompat
+                .Builder(getApplicationContext(), channelId)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("StepCounter Service")
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setContentText("Running")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(false)
+                .setPriority(NotificationCompat.PRIORITY_MAX);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            if (notificationManager != null && notificationManager.getNotificationChannel(channelId) == null) {
+
+                NotificationChannel notificationChannel = new NotificationChannel(
+                        channelId,
+                        "StepCounter Service",
+                        NotificationManager.IMPORTANCE_HIGH
+                );
+
+                notificationChannel.setDescription("This channel is used by step counter service");
+
+                notificationManager.createNotificationChannel(notificationChannel);
+
+                return builder;
+            }
+        }
+        return null;
+    }
+
     private void saveEveryStepCounterValue(int stepCounterValue) {
-        SharedPreferences pref = context.getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
         // TODO : if device reboot, need to return 0 not previousVal (may be use previousVal)
@@ -74,7 +140,7 @@ public class StepCounter implements SensorEventListener {
     public int getStepCounterValue() {
         // use SharedPreference to get current trigger value
         // TODO : Using SharedPreference may not be as good as you think.
-        SharedPreferences pref = context.getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
 
         return pref.getInt(MyConstants.STEP_COUNTER_VALUE, 0);
     }
@@ -92,5 +158,11 @@ public class StepCounter implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 }

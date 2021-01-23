@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.app.mobileboxingvr.constants.MyConstants;
-import com.app.mobileboxingvr.helpers.StepCounter;
 import com.app.mobileboxingvr.models.UserActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -25,7 +24,6 @@ public class ActivityService {
     private FirebaseDatabase database;
     private DatabaseReference myRef;
 
-    private StepCounter stepCounter;
     private UserService user;
     private String userID;
 
@@ -35,7 +33,6 @@ public class ActivityService {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("user_activity");
 
-        stepCounter = StepCounter.getInstance(context);
         user = UserService.getInstance();
         userID = user.getCurrentUser().getUid();
     }
@@ -48,7 +45,8 @@ public class ActivityService {
     }
 
     public int getStepCounterValue() {
-        int currentValue = stepCounter.getStepCounterValue();
+        // TODO : get step counter value
+        int currentValue = 0;
 
         SharedPreferences pref = context.getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
         int previousValue = pref.getInt(MyConstants.CURRENT_STEP_COUNTER_VALUE, -1);
