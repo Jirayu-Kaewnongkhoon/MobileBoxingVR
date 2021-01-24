@@ -11,7 +11,7 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.app.mobileboxingvr.constants.MyConstants;
-import com.app.mobileboxingvr.helpers.Location;
+import com.app.mobileboxingvr.helpers.LocationTracking;
 import com.app.mobileboxingvr.helpers.StepCounter;
 import com.app.mobileboxingvr.works.ActivityWork;
 
@@ -58,14 +58,14 @@ public class BackgroundTask {
     }
 
     private void startLocationService() {
-        Intent intent = new Intent(context, Location.class);
+        Intent intent = new Intent(context, LocationTracking.class);
         intent.setAction(MyConstants.ACTION_START_LOCATION_SERVICE);
         context.startService(intent);
         Toast.makeText(context, "Location service started", Toast.LENGTH_SHORT).show();
     }
 
     private void stopLocationService() {
-        Intent intent = new Intent(context, Location.class);
+        Intent intent = new Intent(context, LocationTracking.class);
         intent.setAction(MyConstants.ACTION_STOP_LOCATION_SERVICE);
         context.startService(intent);
         Toast.makeText(context, "Location service stopped", Toast.LENGTH_SHORT).show();
@@ -86,10 +86,7 @@ public class BackgroundTask {
     }
 
     private PeriodicWorkRequest getPeriodicWorkRequest() {
-        // TODO : set delay maybe not necessary
-        // to fix new initial step counter when app close => setInitialDelay for running first work after close app
         return new PeriodicWorkRequest.Builder(ActivityWork.class, 15, TimeUnit.MINUTES)
-//                .setInitialDelay(5, TimeUnit.MINUTES)
                 .addTag(MyConstants.WORK_NAME)
 //                .setConstraints(getConstraints())
                 .build();

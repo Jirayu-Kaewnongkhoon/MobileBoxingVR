@@ -8,42 +8,28 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.constants.MyConstants;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 
 import java.time.LocalTime;
 
-public class Location extends Service {
+public class LocationTracking extends Service implements LocationListener {
 
     private static final String TAG = "Location";
 
-    private LocationCallback locationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            super.onLocationResult(locationResult);
-
-            if (locationResult != null && locationResult.getLastLocation() != null) {
-                double lat = locationResult.getLastLocation().getLatitude();
-                double lng = locationResult.getLastLocation().getLongitude();
-
-                // TODO : return location to calculate distance
-
-                Log.d(TAG, "onLocationResult: " + lat + ", " + lng);
-            }
-        }
-    };
+    private LocationManager locationManager;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -72,25 +58,20 @@ public class Location extends Service {
     }
 
     private void startLocationService() {
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(4000);
-        locationRequest.setFastestInterval(2000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
 
-        LocationServices.getFusedLocationProviderClient(this)
-                .requestLocationUpdates(locationRequest, locationCallback, getMainLooper());
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
 
         startForeground(111, createNotification().build());
     }
 
     private void stopLocationService() {
-        LocationServices.getFusedLocationProviderClient(this)
-                .removeLocationUpdates(locationCallback);
+        locationManager.removeUpdates(this);
         stopForeground(true);
         stopSelf();
     }
@@ -130,11 +111,10 @@ public class Location extends Service {
                 notificationChannel.setDescription("This channel is used by location service");
 
                 notificationManager.createNotificationChannel(notificationChannel);
-
-                return builder;
             }
         }
-        return null;
+
+        return builder;
     }
 
     private void saveEveryLocation(double lat, double lng) {
@@ -153,5 +133,16 @@ public class Location extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+
+        // TODO : return location to calculate distance
+
+        Log.d(TAG, "onLocationResult: " + lat + ", " + lng);
     }
 }

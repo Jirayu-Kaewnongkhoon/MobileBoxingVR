@@ -24,7 +24,7 @@
         </activity>
 
         <service
-            android:name=".helpers.Location"
+            android:name=".helpers.LocationTracking"
             android:enabled="true"
             android:exported="false"/>
 

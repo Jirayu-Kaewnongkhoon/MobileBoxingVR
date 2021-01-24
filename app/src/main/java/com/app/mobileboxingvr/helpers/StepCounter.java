@@ -115,11 +115,10 @@ public class StepCounter extends Service implements SensorEventListener {
                 notificationChannel.setDescription("This channel is used by step counter service");
 
                 notificationManager.createNotificationChannel(notificationChannel);
-
-                return builder;
             }
         }
-        return null;
+
+        return builder;
     }
 
     private void saveEveryStepCounterValue(int stepCounterValue) {
