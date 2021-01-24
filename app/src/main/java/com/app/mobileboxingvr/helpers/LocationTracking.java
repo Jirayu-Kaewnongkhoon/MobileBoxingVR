@@ -12,7 +12,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -27,7 +29,7 @@ import java.time.LocalTime;
 
 public class LocationTracking extends Service implements LocationListener {
 
-    private static final String TAG = "Location";
+    private static final String TAG = "LocationTracking";
 
     private LocationManager locationManager;
 
@@ -67,7 +69,7 @@ public class LocationTracking extends Service implements LocationListener {
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
 
-        startForeground(111, createNotification().build());
+        startForeground(222, createNotification().build());
     }
 
     private void stopLocationService() {
@@ -121,11 +123,45 @@ public class LocationTracking extends Service implements LocationListener {
         SharedPreferences pref = getSharedPreferences(MyConstants.SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
-        // TODO : if device reboot, need to return 0 not previousVal (may be use previousVal)
-
         // save every trigger value to fix when initialize sensor
         editor.putLong(MyConstants.LATITUDE_VALUE, Double.doubleToRawLongBits(lat));
         editor.putLong(MyConstants.LONGITUDE_VALUE, Double.doubleToRawLongBits(lng));
+        editor.apply();
+    }
+
+    private void saveDistance(double currentLatitude, double currentLongitude) {
+        SharedPreferences pref = getSharedPreferences(MyConstants.SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+
+        // set current location
+        Location currentLocation = new Location("");
+        currentLocation.setLatitude(currentLatitude);
+        currentLocation.setLongitude(currentLongitude);
+
+        long previousLatitude = pref.getLong(MyConstants.LATITUDE_VALUE, MyConstants.EXCLUDE_VALUE);
+        long previousLongitude = pref.getLong(MyConstants.LONGITUDE_VALUE, MyConstants.EXCLUDE_VALUE);
+        Log.d(TAG, "saveDistance: previous lat " + Double.longBitsToDouble(previousLatitude));
+        Log.d(TAG, "saveDistance: previous lng " + Double.longBitsToDouble(previousLongitude));
+
+        if (previousLatitude == MyConstants.EXCLUDE_VALUE
+                && previousLongitude == MyConstants.EXCLUDE_VALUE) {
+            Log.d(TAG, "saveDistance: EX");
+            return;
+        }
+
+        // set previous location
+        Location previousLocation = new Location("");
+        previousLocation.setLatitude(Double.longBitsToDouble(previousLatitude));
+        previousLocation.setLongitude(Double.longBitsToDouble(previousLongitude));
+
+        // calculate distance & save to SharedPreference
+        double distance = previousLocation.distanceTo(currentLocation);
+        long previousDistance = pref.getLong(MyConstants.DISTANCE_VALUE, 0);
+        double totalDistance = Double.longBitsToDouble(previousDistance) + distance;
+        Log.d(TAG, "saveDistance: distance => " + distance);
+        Log.d(TAG, "saveDistance: previous => " + Double.longBitsToDouble(previousDistance));
+        Log.d(TAG, "saveDistance: total => " + totalDistance);
+        editor.putLong(MyConstants.DISTANCE_VALUE, Double.doubleToRawLongBits(totalDistance));
         editor.apply();
     }
 
@@ -135,14 +171,36 @@ public class LocationTracking extends Service implements LocationListener {
         return null;
     }
 
-
     @Override
     public void onLocationChanged(@NonNull Location location) {
         double lat = location.getLatitude();
         double lng = location.getLongitude();
 
-        // TODO : return location to calculate distance
+        // TODO : check if location is the same location then not execute OR set min meter
+        // save every trigger value
+        saveDistance(lat, lng);
+        saveEveryLocation(lat, lng);
 
         Log.d(TAG, "onLocationResult: " + lat + ", " + lng);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.d(TAG, "onStatusChanged: " + status);
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+        Log.d(TAG, "onProviderEnabled: " + provider);
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+        Log.d(TAG, "onProviderDisabled: " + provider);
+
+        // ask for enable GPS
+        if (provider.equals("gps")) {
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
     }
 }

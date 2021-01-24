@@ -64,6 +64,22 @@ public class GameProfile {
         this.staminaExp = staminaExp;
     }
 
+    public int getAgilityLevel() {
+        return agilityLevel;
+    }
+
+    public void setAgilityLevel(int agilityLevel) {
+        this.agilityLevel = agilityLevel;
+    }
+
+    public int getAgilityExp() {
+        return agilityExp;
+    }
+
+    public void setAgilityExp(int agilityExp) {
+        this.agilityExp = agilityExp;
+    }
+
     public int getHealth() {
         return health;
     }
@@ -103,6 +119,8 @@ public class GameProfile {
                 ", strengthExp=" + strengthExp +
                 ", staminaLevel=" + staminaLevel +
                 ", staminaExp=" + staminaExp +
+                ", agilityLevel=" + agilityLevel +
+                ", agilityExp=" + agilityExp +
                 ", health=" + health +
                 ", damage=" + damage +
                 ", defense=" + defense +

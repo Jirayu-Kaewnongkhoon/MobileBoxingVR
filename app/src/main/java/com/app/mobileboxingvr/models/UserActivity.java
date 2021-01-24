@@ -5,17 +5,17 @@ public class UserActivity {
     private String timestamp;
     private int timeSpent;
     private int stepCounter;
-
-    private int strengthExp;
-    private int staminaExp;
-    private int agilityExp;
+    private double distance;
+    private double speed;
 
     public UserActivity() {}
 
-    public UserActivity(String timestamp, int timeSpent, int stepCounter) {
+    public UserActivity(String timestamp, int timeSpent, int stepCounter, double distance, double speed) {
         this.timestamp = timestamp;
         this.timeSpent = timeSpent;
         this.stepCounter = stepCounter;
+        this.distance = distance;
+        this.speed = speed;
     }
 
     public String getTimestamp() {
@@ -42,28 +42,20 @@ public class UserActivity {
         this.stepCounter = stepCounter;
     }
 
-    public int getStrengthExp() {
-        return strengthExp;
+    public double getDistance() {
+        return distance;
     }
 
-    public void setStrengthExp(int strengthExp) {
-        this.strengthExp = strengthExp;
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
-    public int getStaminaExp() {
-        return staminaExp;
+    public double getSpeed() {
+        return speed;
     }
 
-    public void setStaminaExp(int staminaExp) {
-        this.staminaExp = staminaExp;
-    }
-
-    public int getAgilityExp() {
-        return agilityExp;
-    }
-
-    public void setAgilityExp(int agilityExp) {
-        this.agilityExp = agilityExp;
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 
     @Override
@@ -72,6 +64,8 @@ public class UserActivity {
                 "timestamp='" + timestamp + '\'' +
                 ", timeSpent=" + timeSpent +
                 ", stepCounter=" + stepCounter +
+                ", distance=" + distance +
+                ", speed=" + speed +
                 '}';
     }
 }

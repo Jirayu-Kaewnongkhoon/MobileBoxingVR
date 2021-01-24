@@ -125,23 +125,9 @@ public class StepCounter extends Service implements SensorEventListener {
         SharedPreferences pref = getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
-        // TODO : if device reboot, need to return 0 not previousVal (may be use previousVal)
-
-        // save every trigger value to fix when initialize sensor
+        // save every trigger value
         editor.putInt(MyConstants.STEP_COUNTER_VALUE, stepCounterValue);
         editor.apply();
-    }
-
-    public Sensor getStepSensor() {
-        return stepSensor;
-    }
-
-    public int getStepCounterValue() {
-        // use SharedPreference to get current trigger value
-        // TODO : Using SharedPreference may not be as good as you think.
-        SharedPreferences pref = getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
-
-        return pref.getInt(MyConstants.STEP_COUNTER_VALUE, 0);
     }
 
     @Override

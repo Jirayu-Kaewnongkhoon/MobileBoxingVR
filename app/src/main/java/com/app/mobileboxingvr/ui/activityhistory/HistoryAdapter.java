@@ -34,9 +34,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         holder.tvTitle.setText(currentItem.getTimestamp());
         holder.tvDetail.setText("Step: " + currentItem.getStepCounter() + " , Time: " + currentItem.getTimeSpent());
-        holder.tvStrengthExp.setText("Str +" + currentItem.getStrengthExp());
-        holder.tvStaminaExp.setText("Stm +" + currentItem.getStaminaExp());
-        holder.tvAgilityExp.setText("Agi +" + currentItem.getAgilityExp());
+        holder.tvStrengthExp.setText("Str +" + getStrengthExp(currentItem));
+        holder.tvStaminaExp.setText("Stm +" + getStaminaExp(currentItem));
+        holder.tvAgilityExp.setText("Agi +" + getAgilityExp(currentItem));
     }
 
     @Override
@@ -58,5 +58,25 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             tvStaminaExp = itemView.findViewById(R.id.tvStaminaExp);
             tvAgilityExp = itemView.findViewById(R.id.tvAgilityExp);
         }
+    }
+
+    private long getStrengthExp(UserActivity activity) {
+        int stepCounter = activity.getStepCounter();
+
+        return Math.round(stepCounter * 0.5);
+    }
+
+    private int getStaminaExp(UserActivity activity) {
+        int stepCounter = activity.getStepCounter();
+        int timeSpent = activity.getTimeSpent();
+
+        return stepCounter / timeSpent;
+    }
+
+    private long getAgilityExp(UserActivity activity) {
+        double distance = activity.getDistance();
+        double timeSpent = activity.getTimeSpent();
+
+        return Math.round(distance / timeSpent);
     }
 }

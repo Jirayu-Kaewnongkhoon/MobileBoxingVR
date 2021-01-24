@@ -74,14 +74,19 @@ public class ActivityWork extends Worker {
         ActivityService activity = ActivityService.getInstance(getApplicationContext());
 
         String timestamp = activity.getTimestamp();
-        int timeSpent = activity.getTimeSpent();
+        int timeSpent = activity.getTimeSpent(MyConstants.WORK_ACCESS);
         int stepCounter = activity.getStepCounterValue();
 
+        // need to call getSpeed before getDistance => Distance will reset after call
+        double speed = activity.getSpeed();
+        double distance = activity.getDistance(MyConstants.WORK_ACCESS);
+
+        // first time will not do anything
         if (stepCounter == MyConstants.DEFAULT_VALUE && timeSpent == MyConstants.DEFAULT_VALUE) {
             return;
         }
 
-        newActivityValue = new UserActivity(timestamp, timeSpent, stepCounter);
+        newActivityValue = new UserActivity(timestamp, timeSpent, stepCounter, distance, speed);
 
         Log.d(TAG, "loadUserActivity: " + newActivityValue.toString());
 
@@ -92,18 +97,15 @@ public class ActivityWork extends Worker {
     private void calculateUserActivityToGameProfile() {
         // calculate Strength
         int newStrengthExp = newActivityValue.getStepCounter();
-        newActivityValue.setStrengthExp(newStrengthExp);
         gameProfile.setStrengthExp(gameProfile.getStrengthExp() + newStrengthExp);
 
         // calculate Stamina
         int newStaminaExp = newActivityValue.getStepCounter() / newActivityValue.getTimeSpent();
-        newActivityValue.setStaminaExp(newStaminaExp);
         gameProfile.setStaminaExp(gameProfile.getStaminaExp() + newStaminaExp);
 
-        // TODO : calculate Agility
-//        int newAgilityExp = 0000;
-//        newActivityValue.setStaminaExp(newAgilityExp);
-//        gameProfile.setAgilityExp(gameProfile.getAgilityExp() + newAgilityExp);
+        // calculate Agility
+        int newAgilityExp = (int) Math.round(newActivityValue.getSpeed() * 10);
+        gameProfile.setAgilityExp(gameProfile.getAgilityExp() + newAgilityExp);
 
         // set new Timestamp
         gameProfile.setTimestamp(newActivityValue.getTimestamp());

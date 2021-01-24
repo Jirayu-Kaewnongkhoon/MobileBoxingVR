@@ -2,6 +2,7 @@ package com.app.mobileboxingvr.services;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.util.Log;
 
 import com.app.mobileboxingvr.constants.MyConstants;
@@ -21,6 +22,8 @@ public class ActivityService {
 
     private Context context;
 
+    private SharedPreferences pref;
+
     private FirebaseDatabase database;
     private DatabaseReference myRef;
 
@@ -29,6 +32,8 @@ public class ActivityService {
 
     private ActivityService(Context context) {
         this.context = context;
+
+        pref = context.getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("user_activity");
@@ -45,11 +50,9 @@ public class ActivityService {
     }
 
     public int getStepCounterValue() {
-        // TODO : get step counter value
-        int currentValue = 0;
+        int currentValue = pref.getInt(MyConstants.STEP_COUNTER_VALUE, 0);
 
-        SharedPreferences pref = context.getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
-        int previousValue = pref.getInt(MyConstants.CURRENT_STEP_COUNTER_VALUE, -1);
+        int previousValue = pref.getInt(MyConstants.CURRENT_STEP_COUNTER_VALUE, MyConstants.DEFAULT_VALUE);
 
         saveCurrentStepCounterValue(currentValue);
         
@@ -64,13 +67,14 @@ public class ActivityService {
         return diff;
     }
 
-    public int getTimeSpent() {
+    public int getTimeSpent(int requestCode) {
         long currentValue = System.currentTimeMillis();
 
-        SharedPreferences pref = context.getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
-        long previousValue = pref.getLong(MyConstants.CURRENT_TIMESTAMP_VALUE, -1);
+        long previousValue = pref.getLong(MyConstants.CURRENT_TIMESTAMP_VALUE, MyConstants.DEFAULT_VALUE);
 
-        saveCurrentTimestampValue(currentValue);
+        if (requestCode == MyConstants.WORK_ACCESS) {
+            saveCurrentTimestampValue(currentValue);
+        }
 
         Log.d(TAG, "getTimeSpent: prev => " + previousValue + ", current " + currentValue);
 
@@ -94,6 +98,31 @@ public class ActivityService {
         return timestamp;
     }
 
+    public double getDistance(int requestCode) {
+        double distance = Double.longBitsToDouble(pref.getLong(MyConstants.DISTANCE_VALUE, 0));
+
+        if (requestCode == MyConstants.WORK_ACCESS) {
+            // reset distance value for next round
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putLong(MyConstants.DISTANCE_VALUE, 0);
+            editor.apply();
+        }
+
+        return distance;
+    }
+
+    public double getSpeed() {
+        double distance = getDistance(MyConstants.SELF_ACCESS);
+        double timeSpent = getTimeSpent(MyConstants.SELF_ACCESS) * MyConstants.SECOND;
+        double speed = distance / timeSpent;
+
+        Log.d(TAG, "getSpeed: distance => " + distance);
+        Log.d(TAG, "getSpeed: time => " + timeSpent);
+        Log.d(TAG, "getSpeed: speed => " + speed);
+
+        return speed;
+    }
+
     public void saveUserActivity(UserActivity userActivity) {
         getUserActivity().push().setValue(userActivity);
     }
@@ -103,7 +132,6 @@ public class ActivityService {
     }
 
     private void saveCurrentStepCounterValue(int stepCounterValue) {
-        SharedPreferences pref = context.getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
         // keep current value
@@ -112,7 +140,6 @@ public class ActivityService {
     }
 
     public void saveCurrentTimestampValue(long timestamp) {
-        SharedPreferences pref = context.getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
         // keep current value
