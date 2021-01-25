@@ -1,4 +1,4 @@
-package com.app.mobileboxingvr.helpers;
+package com.app.mobileboxingvr.services;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;

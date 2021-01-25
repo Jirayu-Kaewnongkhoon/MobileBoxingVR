@@ -1,8 +1,7 @@
-package com.app.mobileboxingvr.services;
+package com.app.mobileboxingvr.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.util.Log;
 
 import com.app.mobileboxingvr.constants.MyConstants;

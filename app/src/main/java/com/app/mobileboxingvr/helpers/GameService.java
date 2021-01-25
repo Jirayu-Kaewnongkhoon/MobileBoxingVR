@@ -1,4 +1,4 @@
-package com.app.mobileboxingvr.services;
+package com.app.mobileboxingvr.helpers;
 
 import com.app.mobileboxingvr.models.GameProfile;
 import com.google.firebase.database.DatabaseReference;

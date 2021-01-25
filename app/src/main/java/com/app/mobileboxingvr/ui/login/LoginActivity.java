@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import com.app.mobileboxingvr.MainActivity;
 import com.app.mobileboxingvr.R;
-import com.app.mobileboxingvr.ui.register.Register;
-import com.app.mobileboxingvr.services.UserService;
+import com.app.mobileboxingvr.ui.register.RegisterActivity;
+import com.app.mobileboxingvr.helpers.UserService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onRegisterClick(View view) {
-        startActivity(new Intent(getApplicationContext(), Register.class));
+        startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
     }
 
     @Override

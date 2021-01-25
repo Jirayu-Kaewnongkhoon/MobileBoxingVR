@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobileBoxingVR">
-        <activity android:name=".ui.register.Register"/>
+        <activity android:name=".ui.register.RegisterActivity"/>
         <activity android:name=".MainActivity" />
         <activity android:name=".ui.login.LoginActivity">
             <intent-filter>
@@ -24,12 +24,12 @@
         </activity>
 
         <service
-            android:name=".helpers.LocationTracking"
+            android:name=".services.LocationTracking"
             android:enabled="true"
             android:exported="false"/>
 
         <service
-            android:name=".helpers.StepCounter"
+            android:name=".services.StepCounter"
             android:enabled="true"
             android:exported="false"/>
 

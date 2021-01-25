@@ -1,7 +1,6 @@
 package com.app.mobileboxingvr.ui.gameprofile;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,18 +14,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.WorkManager;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.background.BackgroundTask;
 import com.app.mobileboxingvr.models.GameProfile;
-import com.app.mobileboxingvr.services.GameService;
-import com.app.mobileboxingvr.services.UserService;
+import com.app.mobileboxingvr.helpers.GameService;
+import com.app.mobileboxingvr.helpers.UserService;
 import com.app.mobileboxingvr.ui.login.LoginActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

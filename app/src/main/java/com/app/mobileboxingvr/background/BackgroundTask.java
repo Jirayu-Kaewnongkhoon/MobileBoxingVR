@@ -11,8 +11,8 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.app.mobileboxingvr.constants.MyConstants;
-import com.app.mobileboxingvr.helpers.LocationTracking;
-import com.app.mobileboxingvr.helpers.StepCounter;
+import com.app.mobileboxingvr.services.LocationTracking;
+import com.app.mobileboxingvr.services.StepCounter;
 import com.app.mobileboxingvr.works.ActivityWork;
 
 import java.util.concurrent.TimeUnit;

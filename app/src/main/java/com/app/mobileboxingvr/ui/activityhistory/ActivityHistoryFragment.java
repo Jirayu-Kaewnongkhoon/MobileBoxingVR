@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.models.UserActivity;
-import com.app.mobileboxingvr.services.ActivityService;
+import com.app.mobileboxingvr.helpers.ActivityService;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
