@@ -49,6 +49,12 @@ public class ActivityService {
         return instance;
     }
 
+    /**
+     *  --getStepCounterValue--
+     *  Get current step counter value from SharedPreference
+     *  and subtract from previous value
+     */
+
     public int getStepCounterValue() {
         int currentValue = pref.getInt(MyConstants.STEP_COUNTER_VALUE, 0);
 
@@ -66,6 +72,12 @@ public class ActivityService {
 
         return diff;
     }
+
+    /**
+     *  --getTimeSpent--
+     *  Get current timestamp value from SharedPreference
+     *  and subtract from previous value
+     */
 
     public int getTimeSpent(int requestCode) {
         long currentValue = System.currentTimeMillis();
@@ -87,6 +99,11 @@ public class ActivityService {
         return timeSpent;
     }
 
+    /**
+     *  --getTimestamp--
+     *  Get current timestamp value
+     */
+
     public String getTimestamp() {
         Date dNow = new Date();
 
@@ -97,6 +114,12 @@ public class ActivityService {
 
         return timestamp;
     }
+
+    /**
+     *  --getDistance--
+     *  Get total distance value from SharedPreference
+     *  and it will reset after method was called with WORK_ACCESS request code
+     */
 
     public double getDistance(int requestCode) {
         double distance = Double.longBitsToDouble(pref.getLong(MyConstants.DISTANCE_VALUE, 0));
@@ -111,6 +134,12 @@ public class ActivityService {
         return distance;
     }
 
+    /**
+     *  --getSpeed--
+     *  Get total distance value with SELF_ACCESS request code and get time spent
+     *  then calculate to velocity with v = s/t
+     */
+
     public double getSpeed() {
         double distance = getDistance(MyConstants.SELF_ACCESS);
         double timeSpent = getTimeSpent(MyConstants.SELF_ACCESS) * MyConstants.SECOND;
@@ -123,13 +152,28 @@ public class ActivityService {
         return speed;
     }
 
+    /**
+     *  --saveUserActivity--
+     *  Save activity logs to database
+     */
+
     public void saveUserActivity(UserActivity userActivity) {
         getUserActivity().push().setValue(userActivity);
     }
 
+    /**
+     *  --getUserActivity--
+     *  Get activity logs from database
+     */
+
     public DatabaseReference getUserActivity() {
         return myRef.child(userID);
     }
+
+    /**
+     *  --saveCurrentStepCounterValue--
+     *  Save current step counter to use for previous value in next round
+     */
 
     private void saveCurrentStepCounterValue(int stepCounterValue) {
         SharedPreferences.Editor editor = pref.edit();
@@ -138,6 +182,11 @@ public class ActivityService {
         editor.putInt(MyConstants.CURRENT_STEP_COUNTER_VALUE, stepCounterValue);
         editor.apply();
     }
+
+    /**
+     *  --saveCurrentTimestampValue--
+     *  Save current timestamp to use for previous value in next round
+     */
 
     public void saveCurrentTimestampValue(long timestamp) {
         SharedPreferences.Editor editor = pref.edit();

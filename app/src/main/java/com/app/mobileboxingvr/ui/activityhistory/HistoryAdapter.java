@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.mobileboxingvr.R;
+import com.app.mobileboxingvr.constants.MyConstants;
 import com.app.mobileboxingvr.models.UserActivity;
 
 import java.util.List;
@@ -60,6 +61,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         }
     }
 
+    // TODO : Create calculator class
     private long getStrengthExp(UserActivity activity) {
         int stepCounter = activity.getStepCounter();
 
@@ -77,6 +79,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         double distance = activity.getDistance();
         double timeSpent = activity.getTimeSpent();
 
-        return Math.round(distance / timeSpent);
+        return Math.round(distance / (timeSpent * MyConstants.SECOND));
     }
 }

@@ -33,6 +33,11 @@ public class LocationTracking extends Service implements LocationListener {
 
     private LocationManager locationManager;
 
+    /**
+     *  --onStartCommand--
+     *  When service was called, it will check what action to do (Start or Stop)
+     */
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -59,7 +64,34 @@ public class LocationTracking extends Service implements LocationListener {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    /**
+     *  --startLocationService--
+     *  Initial Location service and then start foreground for running service
+     */
+
     private void startLocationService() {
+        initializeLocationService();
+
+        startForeground(222, createNotification().build());
+    }
+
+    /**
+     *  --stopLocationService--
+     *  Remove listener and then stop foreground
+     */
+
+    private void stopLocationService() {
+        locationManager.removeUpdates(this);
+        stopForeground(true);
+        stopSelf();
+    }
+
+    /**
+     *  --initializeLocationService--
+     *  Initial Location service and register listener
+     */
+
+    private void initializeLocationService() {
         locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -68,15 +100,12 @@ public class LocationTracking extends Service implements LocationListener {
         }
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
-
-        startForeground(222, createNotification().build());
     }
 
-    private void stopLocationService() {
-        locationManager.removeUpdates(this);
-        stopForeground(true);
-        stopSelf();
-    }
+    /**
+     *  --createNotification--
+     *  Create Notification for running persistent service
+     */
 
     private NotificationCompat.Builder createNotification() {
         String channelId = "location_notification_channel";
@@ -119,6 +148,11 @@ public class LocationTracking extends Service implements LocationListener {
         return builder;
     }
 
+    /**
+     *  --saveEveryLocation--
+     *  Save trigger value from listener to SharedPreference
+     */
+
     private void saveEveryLocation(double lat, double lng) {
         SharedPreferences pref = getSharedPreferences(MyConstants.SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
@@ -128,6 +162,12 @@ public class LocationTracking extends Service implements LocationListener {
         editor.putLong(MyConstants.LONGITUDE_VALUE, Double.doubleToRawLongBits(lng));
         editor.apply();
     }
+
+    /**
+     *  --saveDistance--
+     *  Calculate distance from previous location to current location
+     *  and then save to SharedPreference
+     */
 
     private void saveDistance(double currentLatitude, double currentLongitude) {
         SharedPreferences pref = getSharedPreferences(MyConstants.SHARED_PREFS, MODE_PRIVATE);

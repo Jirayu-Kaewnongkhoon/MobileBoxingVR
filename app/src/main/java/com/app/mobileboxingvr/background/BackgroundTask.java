@@ -34,6 +34,12 @@ public class BackgroundTask {
         return instance;
     }
 
+    /**
+     *  --startBackgroundTask--
+     *  Start service for tracking user activity
+     *  and then start background task for convert user data to game data
+     */
+
     public void startBackgroundTask() {
         startLocationService();
         startStepCounterService();
@@ -48,6 +54,11 @@ public class BackgroundTask {
         Toast.makeText(context, "Job started..", Toast.LENGTH_LONG).show();
     }
 
+    /**
+     *  --stopBackgroundTask--
+     *  Stop service and stop background task
+     */
+
     public void stopBackgroundTask() {
         stopLocationService();
         stopStepCounterService();
@@ -57,12 +68,22 @@ public class BackgroundTask {
         Toast.makeText(context, "Job stopped..", Toast.LENGTH_LONG).show();
     }
 
+    /**
+     *  --startLocationService--
+     *  Create intent for start Location service
+     */
+
     private void startLocationService() {
         Intent intent = new Intent(context, LocationTracking.class);
         intent.setAction(MyConstants.ACTION_START_LOCATION_SERVICE);
         context.startService(intent);
         Toast.makeText(context, "Location service started", Toast.LENGTH_SHORT).show();
     }
+
+    /**
+     *  --stopLocationService--
+     *  Create intent for stop Location service
+     */
 
     private void stopLocationService() {
         Intent intent = new Intent(context, LocationTracking.class);
@@ -71,12 +92,22 @@ public class BackgroundTask {
         Toast.makeText(context, "Location service stopped", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     *  --startStepCounterService--
+     *  Create intent for start Step Counter service
+     */
+
     private void startStepCounterService() {
         Intent intent = new Intent(context, StepCounter.class);
         intent.setAction(MyConstants.ACTION_START_STEP_COUNTER_SERVICE);
         context.startService(intent);
         Toast.makeText(context, "StepCounter service started", Toast.LENGTH_SHORT).show();
     }
+
+    /**
+     *  --stopStepCounterService--
+     *  Create intent for stop Step Counter service
+     */
 
     private void stopStepCounterService() {
         Intent intent = new Intent(context, StepCounter.class);
@@ -85,12 +116,22 @@ public class BackgroundTask {
         Toast.makeText(context, "StepCounter service stopped", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     *  --getPeriodicWorkRequest--
+     *  Create PeriodicWorkRequest property for WorkManger
+     */
+
     private PeriodicWorkRequest getPeriodicWorkRequest() {
         return new PeriodicWorkRequest.Builder(ActivityWork.class, 15, TimeUnit.MINUTES)
                 .addTag(MyConstants.WORK_NAME)
 //                .setConstraints(getConstraints())
                 .build();
     }
+
+    /**
+     *  --getConstraints--
+     *  Create Constraints property for PeriodicWorkRequest
+     */
 
     private Constraints getConstraints() {
         // isNecessary?

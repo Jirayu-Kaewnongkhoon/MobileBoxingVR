@@ -30,6 +30,11 @@ public class StepCounter extends Service implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor stepSensor;
 
+    /**
+     *  --onStartCommand--
+     *  When service was called, it will check what action to do (Start or Stop)
+     */
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -56,11 +61,21 @@ public class StepCounter extends Service implements SensorEventListener {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    /**
+     *  --startStepCounterService--
+     *  Initial Step Counter service and then start foreground for running service
+     */
+
     private void startStepCounterService() {
-        initializeSensor();
+        initializeSensorService();
 
         startForeground(111, createNotification().build());
     }
+
+    /**
+     *  --stopStepCounterService--
+     *  Remove listener and then stop foreground
+     */
 
     private void stopStepCounterService() {
         sensorManager.unregisterListener(this, stepSensor);
@@ -68,7 +83,12 @@ public class StepCounter extends Service implements SensorEventListener {
         stopSelf();
     }
 
-    private void initializeSensor() {
+    /**
+     *  --initializeSensorService--
+     *  Initial Step Counter service and register listener
+     */
+
+    private void initializeSensorService() {
         sensorManager = (SensorManager) getApplicationContext().getSystemService(Context.SENSOR_SERVICE);
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
@@ -79,6 +99,11 @@ public class StepCounter extends Service implements SensorEventListener {
             Log.d(TAG, "initialSensor: Step Counter Sensor Not Available");
         }
     }
+
+    /**
+     *  --createNotification--
+     *  Create Notification for running persistent service
+     */
 
     private NotificationCompat.Builder createNotification() {
         String channelId = "step_counter_notification_channel";
@@ -120,6 +145,11 @@ public class StepCounter extends Service implements SensorEventListener {
 
         return builder;
     }
+
+    /**
+     *  --saveEveryStepCounterValue--
+     *  Save trigger value from listener to SharedPreference
+     */
 
     private void saveEveryStepCounterValue(int stepCounterValue) {
         SharedPreferences pref = getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);

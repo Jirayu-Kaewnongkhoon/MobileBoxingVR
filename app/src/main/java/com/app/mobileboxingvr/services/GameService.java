@@ -29,9 +29,19 @@ public class GameService {
         return instance;
     }
 
+    /**
+     *  --updateGameProfile--
+     *  Save game profile to database
+     */
+
     public void updateGameProfile(GameProfile gameProfile) {
         getGameProfile().setValue(gameProfile);
     }
+
+    /**
+     *  --getGameProfile--
+     *  Get game profile from database
+     */
 
     public DatabaseReference getGameProfile() {
         return myRef.child(userID);

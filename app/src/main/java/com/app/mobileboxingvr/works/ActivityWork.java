@@ -49,6 +49,11 @@ public class ActivityWork extends Worker {
         return Result.success();
     }
 
+    /**
+     *  --loadGameProfile--
+     *  Get current game profile from database
+     */
+
     private void loadGameProfile() {
         game.getGameProfile().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -69,6 +74,12 @@ public class ActivityWork extends Worker {
             }
         });
     }
+
+    /**
+     *  --loadUserActivity--
+     *  Get user activity that come from tracking service
+     *  and save to database
+     */
 
     private void loadUserActivity() {
         ActivityService activity = ActivityService.getInstance(getApplicationContext());
@@ -94,9 +105,14 @@ public class ActivityWork extends Worker {
         loadGameProfile();
     }
 
+    /**
+     *  --calculateUserActivityToGameProfile--
+     *  Convert user activity that come from tracking service to game data
+     */
+
     private void calculateUserActivityToGameProfile() {
         // calculate Strength
-        int newStrengthExp = newActivityValue.getStepCounter();
+        int newStrengthExp = (int) Math.round(newActivityValue.getStepCounter() * 0.5);
         gameProfile.setStrengthExp(gameProfile.getStrengthExp() + newStrengthExp);
 
         // calculate Stamina
@@ -113,6 +129,11 @@ public class ActivityWork extends Worker {
         Log.d(TAG, "calculateUserActivityToGameProfile: " + gameProfile.toString());
         game.updateGameProfile(gameProfile);
     }
+
+    /**
+     *  --displayNotification--
+     *  Create Notification for checking time when task is done
+     */
 
     private void displayNotification() {
         NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
