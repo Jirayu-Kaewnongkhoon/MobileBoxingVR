@@ -15,8 +15,8 @@ import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.constants.MyConstants;
 import com.app.mobileboxingvr.models.GameProfile;
 import com.app.mobileboxingvr.models.UserActivity;
-import com.app.mobileboxingvr.helpers.ActivityService;
-import com.app.mobileboxingvr.helpers.GameService;
+import com.app.mobileboxingvr.helpers.ActivityManager;
+import com.app.mobileboxingvr.helpers.GameManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -27,7 +27,7 @@ public class ActivityWork extends Worker {
 
     private static final String TAG = "ActivityWork";
 
-    private GameService game;
+    private GameManager game;
 
     private GameProfile gameProfile;
     private UserActivity newActivityValue;
@@ -40,7 +40,7 @@ public class ActivityWork extends Worker {
     @Override
     public Result doWork() {
 
-        game = GameService.getInstance();
+        game = GameManager.getInstance();
 
         loadUserActivity();
 
@@ -82,7 +82,7 @@ public class ActivityWork extends Worker {
      */
 
     private void loadUserActivity() {
-        ActivityService activity = ActivityService.getInstance(getApplicationContext());
+        ActivityManager activity = ActivityManager.getInstance(getApplicationContext());
 
         String timestamp = activity.getTimestamp();
         int timeSpent = activity.getTimeSpent(MyConstants.WORK_ACCESS);

@@ -13,11 +13,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class ActivityService {
+public class ActivityManager {
 
     private static final String TAG = "ActivityService";
 
-    private static ActivityService instance;
+    private static ActivityManager instance;
 
     private Context context;
 
@@ -26,10 +26,10 @@ public class ActivityService {
     private FirebaseDatabase database;
     private DatabaseReference myRef;
 
-    private UserService user;
+    private UserManager user;
     private String userID;
 
-    private ActivityService(Context context) {
+    private ActivityManager(Context context) {
         this.context = context;
 
         pref = context.getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
@@ -37,13 +37,13 @@ public class ActivityService {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("user_activity");
 
-        user = UserService.getInstance();
+        user = UserManager.getInstance();
         userID = user.getCurrentUser().getUid();
     }
 
-    public static ActivityService getInstance(Context context) {
+    public static ActivityManager getInstance(Context context) {
         if (instance == null) {
-            instance = new ActivityService(context);
+            instance = new ActivityManager(context);
         }
         return instance;
     }

@@ -6,19 +6,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class UserService {
+public class UserManager {
 
-    private static UserService instance;
+    private static UserManager instance;
 
     private FirebaseAuth auth;
 
-    private UserService() {
+    private UserManager() {
         initializeFirebase();
     }
 
-    public static UserService getInstance() {
+    public static UserManager getInstance() {
         if (instance == null) {
-            instance = new UserService();
+            instance = new UserManager();
         }
         return instance;
     }

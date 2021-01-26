@@ -12,14 +12,14 @@ import android.widget.Toast;
 
 import com.app.mobileboxingvr.MainActivity;
 import com.app.mobileboxingvr.R;
-import com.app.mobileboxingvr.helpers.UserService;
+import com.app.mobileboxingvr.helpers.UserManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private UserService user;
+    private UserManager user;
 
     private EditText username, email, password;
 
@@ -36,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
         email = findViewById(R.id.etEmail);
         password = findViewById(R.id.etPassword);
 
-        user = UserService.getInstance();
+        user = UserManager.getInstance();
     }
 
     public void onRegisterClick(View view) {
