@@ -1,7 +1,6 @@
 package com.app.mobileboxingvr.helpers;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.app.mobileboxingvr.constants.MyConstants;
@@ -19,9 +18,7 @@ public class ActivityManager {
 
     private static ActivityManager instance;
 
-    private Context context;
-
-    private SharedPreferences pref;
+    private SharedPreferenceManager pref;
 
     private FirebaseDatabase database;
     private DatabaseReference myRef;
@@ -30,9 +27,7 @@ public class ActivityManager {
     private String userID;
 
     private ActivityManager(Context context) {
-        this.context = context;
-
-        pref = context.getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
+        pref = new SharedPreferenceManager(context);
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("user_activity");
@@ -55,11 +50,11 @@ public class ActivityManager {
      */
 
     public int getStepCounterValue() {
-        int currentValue = pref.getInt(MyConstants.STEP_COUNTER_VALUE, 0);
+        int currentValue = pref.getStepCounterValue();
 
-        int previousValue = pref.getInt(MyConstants.CURRENT_STEP_COUNTER_VALUE, MyConstants.DEFAULT_VALUE);
+        int previousValue = pref.getPreviousStepCounterValue();
 
-        saveCurrentStepCounterValue(currentValue);
+        pref.saveCurrentStepCounterValue(currentValue);
         
         Log.d(TAG, "getStepCounterValue: prev => " + previousValue + ", current " + currentValue);
 
@@ -78,14 +73,12 @@ public class ActivityManager {
      *  and subtract from previous value
      */
 
-    public int getTimeSpent(int requestCode) {
+    public int getTimeSpent() {
         long currentValue = System.currentTimeMillis();
 
-        long previousValue = pref.getLong(MyConstants.CURRENT_TIMESTAMP_VALUE, MyConstants.DEFAULT_VALUE);
+        long previousValue = pref.getPreviousTimestampValue();
 
-        if (requestCode == MyConstants.WORK_ACCESS) {
-            saveCurrentTimestampValue(currentValue);
-        }
+        pref.saveCurrentTimestampValue(currentValue);
 
         Log.d(TAG, "getTimeSpent: prev => " + previousValue + ", current " + currentValue);
 
@@ -117,18 +110,13 @@ public class ActivityManager {
     /**
      *  --getDistance--
      *  Get total distance value from SharedPreference
-     *  and it will reset after method was called with WORK_ACCESS request code
      */
 
-    public double getDistance(int requestCode) {
-        double distance = Double.longBitsToDouble(pref.getLong(MyConstants.DISTANCE_VALUE, 0));
+    public double getDistance() {
+        double distance = pref.getTotalDistance();
 
-        if (requestCode == MyConstants.WORK_ACCESS) {
-            // reset distance value for next round
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putLong(MyConstants.DISTANCE_VALUE, 0);
-            editor.apply();
-        }
+        // reset distance value for next round
+        pref.resetTotalDistance();
 
         return distance;
     }
@@ -139,10 +127,8 @@ public class ActivityManager {
      *  then calculate to velocity with v = s/t
      */
 
-    public double getSpeed() {
-        double distance = getDistance(MyConstants.SELF_ACCESS);
-        double timeSpent = getTimeSpent(MyConstants.SELF_ACCESS) * MyConstants.SECOND;
-        double speed = distance / timeSpent;
+    public double getSpeed(double distance, int timeSpent) {
+        double speed = distance / ( timeSpent * MyConstants.SECOND );
 
         Log.d(TAG, "getSpeed: distance => " + distance);
         Log.d(TAG, "getSpeed: time => " + timeSpent);
@@ -167,31 +153,5 @@ public class ActivityManager {
 
     public DatabaseReference getUserActivity() {
         return myRef.child(userID);
-    }
-
-    /**
-     *  --saveCurrentStepCounterValue--
-     *  Save current step counter to use for previous value in next round
-     */
-
-    private void saveCurrentStepCounterValue(int stepCounterValue) {
-        SharedPreferences.Editor editor = pref.edit();
-
-        // keep current value
-        editor.putInt(MyConstants.CURRENT_STEP_COUNTER_VALUE, stepCounterValue);
-        editor.apply();
-    }
-
-    /**
-     *  --saveCurrentTimestampValue--
-     *  Save current timestamp to use for previous value in next round
-     */
-
-    public void saveCurrentTimestampValue(long timestamp) {
-        SharedPreferences.Editor editor = pref.edit();
-
-        // keep current value
-        editor.putLong(MyConstants.CURRENT_TIMESTAMP_VALUE, timestamp);
-        editor.apply();
     }
 }

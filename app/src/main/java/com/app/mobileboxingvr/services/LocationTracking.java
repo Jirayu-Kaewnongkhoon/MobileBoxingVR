@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -24,6 +23,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.constants.MyConstants;
+import com.app.mobileboxingvr.helpers.SharedPreferenceManager;
 
 import java.time.LocalTime;
 
@@ -32,6 +32,8 @@ public class LocationTracking extends Service implements LocationListener {
     private static final String TAG = "LocationTracking";
 
     private LocationManager locationManager;
+
+    private SharedPreferenceManager pref;
 
     /**
      *  --onStartCommand--
@@ -62,6 +64,13 @@ public class LocationTracking extends Service implements LocationListener {
         }
 
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        pref = new SharedPreferenceManager(getApplicationContext());
     }
 
     /**
@@ -148,63 +157,6 @@ public class LocationTracking extends Service implements LocationListener {
         return builder;
     }
 
-    /**
-     *  --saveEveryLocation--
-     *  Save trigger value from listener to SharedPreference
-     */
-
-    private void saveEveryLocation(double lat, double lng) {
-        SharedPreferences pref = getSharedPreferences(MyConstants.SHARED_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-
-        // save every trigger value to fix when initialize sensor
-        editor.putLong(MyConstants.LATITUDE_VALUE, Double.doubleToRawLongBits(lat));
-        editor.putLong(MyConstants.LONGITUDE_VALUE, Double.doubleToRawLongBits(lng));
-        editor.apply();
-    }
-
-    /**
-     *  --saveDistance--
-     *  Calculate distance from previous location to current location
-     *  and then save to SharedPreference
-     */
-
-    private void saveDistance(double currentLatitude, double currentLongitude) {
-        SharedPreferences pref = getSharedPreferences(MyConstants.SHARED_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-
-        // set current location
-        Location currentLocation = new Location("");
-        currentLocation.setLatitude(currentLatitude);
-        currentLocation.setLongitude(currentLongitude);
-
-        long previousLatitude = pref.getLong(MyConstants.LATITUDE_VALUE, MyConstants.EXCLUDE_VALUE);
-        long previousLongitude = pref.getLong(MyConstants.LONGITUDE_VALUE, MyConstants.EXCLUDE_VALUE);
-        Log.d(TAG, "saveDistance: previous lat " + Double.longBitsToDouble(previousLatitude));
-        Log.d(TAG, "saveDistance: previous lng " + Double.longBitsToDouble(previousLongitude));
-
-        if (previousLatitude == MyConstants.EXCLUDE_VALUE
-                && previousLongitude == MyConstants.EXCLUDE_VALUE) {
-            Log.d(TAG, "saveDistance: EX");
-            return;
-        }
-
-        // set previous location
-        Location previousLocation = new Location("");
-        previousLocation.setLatitude(Double.longBitsToDouble(previousLatitude));
-        previousLocation.setLongitude(Double.longBitsToDouble(previousLongitude));
-
-        // calculate distance & save to SharedPreference
-        double distance = previousLocation.distanceTo(currentLocation);
-        long previousDistance = pref.getLong(MyConstants.DISTANCE_VALUE, 0);
-        double totalDistance = Double.longBitsToDouble(previousDistance) + distance;
-        Log.d(TAG, "saveDistance: distance => " + distance);
-        Log.d(TAG, "saveDistance: previous => " + Double.longBitsToDouble(previousDistance));
-        Log.d(TAG, "saveDistance: total => " + totalDistance);
-        editor.putLong(MyConstants.DISTANCE_VALUE, Double.doubleToRawLongBits(totalDistance));
-        editor.apply();
-    }
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -218,8 +170,8 @@ public class LocationTracking extends Service implements LocationListener {
 
         // TODO : check if location is the same location then not execute OR set min meter
         // save every trigger value
-        saveDistance(lat, lng);
-        saveEveryLocation(lat, lng);
+        pref.saveDistance(lat, lng);
+        pref.saveEveryLocation(lat, lng);
 
         Log.d(TAG, "onLocationResult: " + lat + ", " + lng);
     }

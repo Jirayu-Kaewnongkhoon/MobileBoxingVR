@@ -21,8 +21,8 @@ public class MyConstants {
     public static final String LATITUDE_VALUE = "LatitudeValue";
     public static final String LONGITUDE_VALUE = "LongitudeValue";
 
-    public static final String CURRENT_STEP_COUNTER_VALUE = "CurrentStepCounterValue";
-    public static final String CURRENT_TIMESTAMP_VALUE = "CurrentTimestampValue";
+    public static final String PREVIOUS_STEP_COUNTER_VALUE = "PreviousStepCounterValue";
+    public static final String PREVIOUS_TIMESTAMP_VALUE = "PreviousTimestampValue";
 
     /**
      *  Constants Value for Time
@@ -37,9 +37,6 @@ public class MyConstants {
 
     public static final int DEFAULT_VALUE = -1;
     public static final long EXCLUDE_VALUE = -999;
-
-    public static final int WORK_ACCESS = 149;
-    public static final int SELF_ACCESS = 230;
 
     /**
      *  Constants Value for Intent

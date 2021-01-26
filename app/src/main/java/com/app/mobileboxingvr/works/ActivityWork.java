@@ -85,12 +85,10 @@ public class ActivityWork extends Worker {
         ActivityManager activity = ActivityManager.getInstance(getApplicationContext());
 
         String timestamp = activity.getTimestamp();
-        int timeSpent = activity.getTimeSpent(MyConstants.WORK_ACCESS);
+        int timeSpent = activity.getTimeSpent();
         int stepCounter = activity.getStepCounterValue();
-
-        // need to call getSpeed before getDistance => Distance will reset after call
-        double speed = activity.getSpeed();
-        double distance = activity.getDistance(MyConstants.WORK_ACCESS);
+        double distance = activity.getDistance();
+        double speed = activity.getSpeed(distance, timeSpent);
 
         // first time will not do anything
         if (stepCounter == MyConstants.DEFAULT_VALUE && timeSpent == MyConstants.DEFAULT_VALUE) {

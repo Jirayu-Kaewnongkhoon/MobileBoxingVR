@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -20,6 +19,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.constants.MyConstants;
+import com.app.mobileboxingvr.helpers.SharedPreferenceManager;
 
 import java.time.LocalTime;
 
@@ -29,6 +29,8 @@ public class StepCounter extends Service implements SensorEventListener {
 
     private SensorManager sensorManager;
     private Sensor stepSensor;
+
+    private SharedPreferenceManager pref;
 
     /**
      *  --onStartCommand--
@@ -59,6 +61,13 @@ public class StepCounter extends Service implements SensorEventListener {
         }
 
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        pref = new SharedPreferenceManager(getApplicationContext());
     }
 
     /**
@@ -146,26 +155,12 @@ public class StepCounter extends Service implements SensorEventListener {
         return builder;
     }
 
-    /**
-     *  --saveEveryStepCounterValue--
-     *  Save trigger value from listener to SharedPreference
-     */
-
-    private void saveEveryStepCounterValue(int stepCounterValue) {
-        SharedPreferences pref = getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-
-        // save every trigger value
-        editor.putInt(MyConstants.STEP_COUNTER_VALUE, stepCounterValue);
-        editor.apply();
-    }
-
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         int stepCounterValue = (int) sensorEvent.values[0];
 
         // use SharedPreference to save current value
-        saveEveryStepCounterValue(stepCounterValue);
+        pref.saveEveryStepCounterValue(stepCounterValue);
 
         Log.d(TAG, "onSensorChanged: step => " + stepCounterValue);
     }
