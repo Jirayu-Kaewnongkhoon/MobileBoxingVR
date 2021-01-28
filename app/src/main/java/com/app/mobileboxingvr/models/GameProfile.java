@@ -13,7 +13,7 @@ public class GameProfile {
     private int health;
     private int damage;
     private int defense;
-    private List<Integer> skillTree;
+    private List<Integer> skills;
     private String timestamp;
 
     public GameProfile() {}
@@ -25,11 +25,6 @@ public class GameProfile {
         this.damage = damage;
         this.defense = defense;
         this.timestamp = timestamp;
-    }
-
-    public void calculateLevel() {
-        strengthLevel = strengthExp/100;
-        staminaLevel = staminaExp/100;
     }
 
     public int getStrengthLevel() {

@@ -13,6 +13,7 @@ import androidx.work.WorkerParameters;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.constants.MyConstants;
+import com.app.mobileboxingvr.helpers.CalculatorManager;
 import com.app.mobileboxingvr.models.GameProfile;
 import com.app.mobileboxingvr.models.UserActivity;
 import com.app.mobileboxingvr.helpers.ActivityManager;
@@ -109,17 +110,46 @@ public class ActivityWork extends Worker {
      */
 
     private void calculateUserActivityToGameProfile() {
+        CalculatorManager calculator = new CalculatorManager(newActivityValue);
+
         // calculate Strength
-        int newStrengthExp = (int) Math.round(newActivityValue.getStepCounter() * 0.5);
-        gameProfile.setStrengthExp(gameProfile.getStrengthExp() + newStrengthExp);
+        int newStrengthExp = calculator.getStrengthExp();
+        int oldStrengthExp = gameProfile.getStrengthExp();
+        int totalStrengthExp = oldStrengthExp + newStrengthExp;
+
+        int newStrengthLevel = calculator.expToLevel(totalStrengthExp).getLevel();
+        int remainStrengthExp = calculator.expToLevel(totalStrengthExp).getExp();
+
+        int oldStrengthLevel = gameProfile.getStrengthLevel();
+        gameProfile.setStrengthLevel(oldStrengthLevel + newStrengthLevel);
+        gameProfile.setStrengthExp(remainStrengthExp);
+
 
         // calculate Stamina
-        int newStaminaExp = newActivityValue.getStepCounter() / newActivityValue.getTimeSpent();
-        gameProfile.setStaminaExp(gameProfile.getStaminaExp() + newStaminaExp);
+        int newStaminaExp = calculator.getStaminaExp();
+        int oldStaminaExp = gameProfile.getStaminaExp();
+        int totalStaminaExp = oldStaminaExp + newStaminaExp;
+
+        int newStaminaLevel = calculator.expToLevel(totalStaminaExp).getLevel();
+        int remainStaminaExp = calculator.expToLevel(totalStaminaExp).getExp();
+
+        int oldStaminaLevel = gameProfile.getStaminaLevel();
+        gameProfile.setStaminaLevel(oldStaminaLevel + newStaminaLevel);
+        gameProfile.setStaminaExp(remainStaminaExp);
+
 
         // calculate Agility
-        int newAgilityExp = (int) Math.round(newActivityValue.getSpeed() * 10);
-        gameProfile.setAgilityExp(gameProfile.getAgilityExp() + newAgilityExp);
+        int newAgilityExp = calculator.getAgilityExp();
+        int oldAgilityExp = gameProfile.getAgilityExp();
+        int totalAgilityExp = oldAgilityExp + newAgilityExp;
+
+        int newAgilityLevel = calculator.expToLevel(totalAgilityExp).getLevel();
+        int remainAgilityExp = calculator.expToLevel(totalAgilityExp).getExp();
+
+        int oldAgilityLevel = gameProfile.getAgilityLevel();
+        gameProfile.setStaminaLevel(oldAgilityLevel + newAgilityLevel);
+        gameProfile.setAgilityExp(remainAgilityExp);
+
 
         // set new Timestamp
         gameProfile.setTimestamp(newActivityValue.getTimestamp());

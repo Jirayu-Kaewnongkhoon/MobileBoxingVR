@@ -48,4 +48,12 @@ public class MyConstants {
     public static final String ACTION_START_STEP_COUNTER_SERVICE = "StartStepCounterService";
     public static final String ACTION_STOP_STEP_COUNTER_SERVICE = "StopStepCounterService";
 
+    /**
+     *  Constants Value for Calculate
+     */
+
+    public static final int MAX_EXP = 100;
+    public static final double EXP_PER_STEP = 0.5;
+    public static final int SPEED_EXP = 10;
+
 }

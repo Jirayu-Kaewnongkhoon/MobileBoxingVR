@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.mobileboxingvr.R;
-import com.app.mobileboxingvr.constants.MyConstants;
+import com.app.mobileboxingvr.helpers.CalculatorManager;
 import com.app.mobileboxingvr.models.UserActivity;
 
 import java.util.List;
@@ -32,12 +32,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @Override
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
         UserActivity currentItem = list.get(position);
+        CalculatorManager calculator = new CalculatorManager(currentItem);
 
         holder.tvTitle.setText(currentItem.getTimestamp());
         holder.tvDetail.setText("Step: " + currentItem.getStepCounter() + " , Time: " + currentItem.getTimeSpent());
-        holder.tvStrengthExp.setText("Str +" + getStrengthExp(currentItem));
-        holder.tvStaminaExp.setText("Stm +" + getStaminaExp(currentItem));
-        holder.tvAgilityExp.setText("Agi +" + getAgilityExp(currentItem));
+        holder.tvStrengthExp.setText("Str +" + calculator.getStrengthExp());
+        holder.tvStaminaExp.setText("Stm +" + calculator.getStaminaExp());
+        holder.tvAgilityExp.setText("Agi +" + calculator.getAgilityExp());
     }
 
     @Override
@@ -59,26 +60,5 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             tvStaminaExp = itemView.findViewById(R.id.tvStaminaExp);
             tvAgilityExp = itemView.findViewById(R.id.tvAgilityExp);
         }
-    }
-
-    // TODO : Create calculator class
-    private long getStrengthExp(UserActivity activity) {
-        int stepCounter = activity.getStepCounter();
-
-        return Math.round(stepCounter * 0.5);
-    }
-
-    private int getStaminaExp(UserActivity activity) {
-        int stepCounter = activity.getStepCounter();
-        int timeSpent = activity.getTimeSpent();
-
-        return stepCounter / timeSpent;
-    }
-
-    private long getAgilityExp(UserActivity activity) {
-        double distance = activity.getDistance();
-        double timeSpent = activity.getTimeSpent();
-
-        return Math.round(distance / (timeSpent * MyConstants.SECOND));
     }
 }
