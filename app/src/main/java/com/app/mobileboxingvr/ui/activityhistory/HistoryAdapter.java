@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.mobileboxingvr.R;
+import com.app.mobileboxingvr.helpers.CalculatorManager;
 import com.app.mobileboxingvr.models.UserActivity;
 
 import java.util.List;
@@ -31,12 +32,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @Override
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
         UserActivity currentItem = list.get(position);
+        CalculatorManager calculator = new CalculatorManager(currentItem);
 
         holder.tvTitle.setText(currentItem.getTimestamp());
         holder.tvDetail.setText("Step: " + currentItem.getStepCounter() + " , Time: " + currentItem.getTimeSpent());
-        holder.tvStrengthExp.setText("Str +" + currentItem.getStrengthExp());
-        holder.tvStaminaExp.setText("Stm +" + currentItem.getStaminaExp());
-        holder.tvAgilityExp.setText("Agi +" + currentItem.getAgilityExp());
+        holder.tvStrengthExp.setText("Str +" + calculator.getStrengthExp());
+        holder.tvStaminaExp.setText("Stm +" + calculator.getStaminaExp());
+        holder.tvAgilityExp.setText("Agi +" + calculator.getAgilityExp());
     }
 
     @Override

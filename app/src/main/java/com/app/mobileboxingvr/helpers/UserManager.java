@@ -1,4 +1,4 @@
-package com.app.mobileboxingvr.services;
+package com.app.mobileboxingvr.helpers;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -6,19 +6,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class UserService {
+public class UserManager {
 
-    private static UserService instance;
+    private static UserManager instance;
 
     private FirebaseAuth auth;
 
-    private UserService() {
+    private UserManager() {
         initializeFirebase();
     }
 
-    public static UserService getInstance() {
+    public static UserManager getInstance() {
         if (instance == null) {
-            instance = new UserService();
+            instance = new UserManager();
         }
         return instance;
     }
@@ -27,21 +27,46 @@ public class UserService {
         auth = FirebaseAuth.getInstance();
     }
 
+    /**
+     *  --getCurrentUser--
+     *  Get current login user from Firebase Authentication
+     */
+
     public FirebaseUser getCurrentUser() {
         return auth.getCurrentUser();
     }
+
+    /**
+     *  --register--
+     *  Register user with Firebase Authentication
+     */
 
     public Task<AuthResult> register(String email, String password) {
         return auth.createUserWithEmailAndPassword(email, password);
     }
 
+    /**
+     *  --login--
+     *  Login user with Firebase Authentication
+     */
+
     public Task<AuthResult> login(String email, String password) {
         return auth.signInWithEmailAndPassword(email, password);
     }
 
+    /**
+     *  --logout--
+     *  Logout user with Firebase Authentication
+     */
+
     public void logout() {
         auth.signOut();
     }
+
+    /**
+     *  --updateProfile--
+     *  Set display name with Firebase Authentication
+     */
 
     public Task<Void> updateProfile(String username) {
 

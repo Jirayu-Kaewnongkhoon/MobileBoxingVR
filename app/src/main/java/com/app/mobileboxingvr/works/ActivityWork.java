@@ -13,10 +13,11 @@ import androidx.work.WorkerParameters;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.constants.MyConstants;
+import com.app.mobileboxingvr.helpers.CalculatorManager;
 import com.app.mobileboxingvr.models.GameProfile;
 import com.app.mobileboxingvr.models.UserActivity;
-import com.app.mobileboxingvr.services.ActivityService;
-import com.app.mobileboxingvr.services.GameService;
+import com.app.mobileboxingvr.helpers.ActivityManager;
+import com.app.mobileboxingvr.helpers.GameManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -27,7 +28,7 @@ public class ActivityWork extends Worker {
 
     private static final String TAG = "ActivityWork";
 
-    private GameService game;
+    private GameManager game;
 
     private GameProfile gameProfile;
     private UserActivity newActivityValue;
@@ -40,7 +41,7 @@ public class ActivityWork extends Worker {
     @Override
     public Result doWork() {
 
-        game = GameService.getInstance();
+        game = GameManager.getInstance();
 
         loadUserActivity();
 
@@ -48,6 +49,11 @@ public class ActivityWork extends Worker {
 
         return Result.success();
     }
+
+    /**
+     *  --loadGameProfile--
+     *  Get current game profile from database
+     */
 
     private void loadGameProfile() {
         game.getGameProfile().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -70,18 +76,27 @@ public class ActivityWork extends Worker {
         });
     }
 
+    /**
+     *  --loadUserActivity--
+     *  Get user activity that come from tracking service
+     *  and save to database
+     */
+
     private void loadUserActivity() {
-        ActivityService activity = ActivityService.getInstance(getApplicationContext());
+        ActivityManager activity = ActivityManager.getInstance(getApplicationContext());
 
         String timestamp = activity.getTimestamp();
         int timeSpent = activity.getTimeSpent();
         int stepCounter = activity.getStepCounterValue();
+        double distance = activity.getDistance();
+        double speed = activity.getSpeed(distance, timeSpent);
 
+        // first time will not do anything
         if (stepCounter == MyConstants.DEFAULT_VALUE && timeSpent == MyConstants.DEFAULT_VALUE) {
             return;
         }
 
-        newActivityValue = new UserActivity(timestamp, timeSpent, stepCounter);
+        newActivityValue = new UserActivity(timestamp, timeSpent, stepCounter, distance, speed);
 
         Log.d(TAG, "loadUserActivity: " + newActivityValue.toString());
 
@@ -89,21 +104,52 @@ public class ActivityWork extends Worker {
         loadGameProfile();
     }
 
+    /**
+     *  --calculateUserActivityToGameProfile--
+     *  Convert user activity that come from tracking service to game data
+     */
+
     private void calculateUserActivityToGameProfile() {
+        CalculatorManager calculator = new CalculatorManager(newActivityValue);
+
         // calculate Strength
-        int newStrengthExp = newActivityValue.getStepCounter();
-        newActivityValue.setStrengthExp(newStrengthExp);
-        gameProfile.setStrengthExp(gameProfile.getStrengthExp() + newStrengthExp);
+        int newStrengthExp = calculator.getStrengthExp();
+        int oldStrengthExp = gameProfile.getStrengthExp();
+        int totalStrengthExp = oldStrengthExp + newStrengthExp;
+
+        int newStrengthLevel = calculator.expToLevel(totalStrengthExp).getLevel();
+        int remainStrengthExp = calculator.expToLevel(totalStrengthExp).getExp();
+
+        int oldStrengthLevel = gameProfile.getStrengthLevel();
+        gameProfile.setStrengthLevel(oldStrengthLevel + newStrengthLevel);
+        gameProfile.setStrengthExp(remainStrengthExp);
+
 
         // calculate Stamina
-        int newStaminaExp = newActivityValue.getStepCounter() / newActivityValue.getTimeSpent();
-        newActivityValue.setStaminaExp(newStaminaExp);
-        gameProfile.setStaminaExp(gameProfile.getStaminaExp() + newStaminaExp);
+        int newStaminaExp = calculator.getStaminaExp();
+        int oldStaminaExp = gameProfile.getStaminaExp();
+        int totalStaminaExp = oldStaminaExp + newStaminaExp;
 
-        // TODO : calculate Agility
-//        int newAgilityExp = 0000;
-//        newActivityValue.setStaminaExp(newAgilityExp);
-//        gameProfile.setAgilityExp(gameProfile.getAgilityExp() + newAgilityExp);
+        int newStaminaLevel = calculator.expToLevel(totalStaminaExp).getLevel();
+        int remainStaminaExp = calculator.expToLevel(totalStaminaExp).getExp();
+
+        int oldStaminaLevel = gameProfile.getStaminaLevel();
+        gameProfile.setStaminaLevel(oldStaminaLevel + newStaminaLevel);
+        gameProfile.setStaminaExp(remainStaminaExp);
+
+
+        // calculate Agility
+        int newAgilityExp = calculator.getAgilityExp();
+        int oldAgilityExp = gameProfile.getAgilityExp();
+        int totalAgilityExp = oldAgilityExp + newAgilityExp;
+
+        int newAgilityLevel = calculator.expToLevel(totalAgilityExp).getLevel();
+        int remainAgilityExp = calculator.expToLevel(totalAgilityExp).getExp();
+
+        int oldAgilityLevel = gameProfile.getAgilityLevel();
+        gameProfile.setStaminaLevel(oldAgilityLevel + newAgilityLevel);
+        gameProfile.setAgilityExp(remainAgilityExp);
+
 
         // set new Timestamp
         gameProfile.setTimestamp(newActivityValue.getTimestamp());
@@ -111,6 +157,11 @@ public class ActivityWork extends Worker {
         Log.d(TAG, "calculateUserActivityToGameProfile: " + gameProfile.toString());
         game.updateGameProfile(gameProfile);
     }
+
+    /**
+     *  --displayNotification--
+     *  Create Notification for checking time when task is done
+     */
 
     private void displayNotification() {
         NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
