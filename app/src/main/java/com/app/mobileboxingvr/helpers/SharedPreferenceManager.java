@@ -147,7 +147,23 @@ public class SharedPreferenceManager {
      */
 
     public void resetTotalDistance() {
-        editor.putLong(MyConstants.DISTANCE_VALUE, 0);
+        editor.remove(MyConstants.DISTANCE_VALUE);
+        editor.apply();
+    }
+
+    public void resetTimestampValue() {
+        editor.remove(MyConstants.PREVIOUS_TIMESTAMP_VALUE);
+        editor.apply();
+    }
+
+    public void resetStepCounterValue() {
+        editor.remove(MyConstants.PREVIOUS_STEP_COUNTER_VALUE);
+        editor.apply();
+    }
+
+    public void resetLocation() {
+        editor.remove(MyConstants.LATITUDE_VALUE);
+        editor.remove(MyConstants.LONGITUDE_VALUE);
         editor.apply();
     }
 }
