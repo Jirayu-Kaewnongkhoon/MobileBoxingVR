@@ -1,6 +1,7 @@
 package com.app.mobileboxingvr.ui.gameprofile;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.background.BackgroundTask;
+import com.app.mobileboxingvr.constants.MyConstants;
 import com.app.mobileboxingvr.models.GameProfile;
 import com.app.mobileboxingvr.helpers.GameManager;
 import com.app.mobileboxingvr.helpers.UserManager;
@@ -27,6 +29,8 @@ import com.app.mobileboxingvr.ui.login.LoginActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
 
 public class GameProfileFragment extends Fragment implements View.OnClickListener {
 
@@ -52,7 +56,16 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
 
         displayPlayerStatus();
 
+        checkSharedPreference();
+
         return v;
+    }
+
+    private void checkSharedPreference() {
+        Map<String, ?> allEntries = getActivity().getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE).getAll();
+        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+            Log.d(TAG, entry.getKey() + ": " + entry.getValue().toString());
+        }
     }
 
     private void initializeView(View v) {
