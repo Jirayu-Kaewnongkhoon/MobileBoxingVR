@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="recyclerViewBackground">#E5E5E5</color>
+    <color name="appBackground">#E5E5E5</color>
 
     <color name="strengthColor">#F31818</color>
     <color name="staminaColor">#186AF3</color>

@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 import com.app.mobileboxingvr.ui.activityhistory.ActivityHistoryFragment;
 import com.app.mobileboxingvr.ui.gameprofile.GameProfileFragment;
-import com.app.mobileboxingvr.ui.setting.SettingFragment;
+import com.app.mobileboxingvr.ui.other.OtherFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -70,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.nav_history:
                             selected = new ActivityHistoryFragment();
                             break;
-                        case R.id.nav_setting:
-                            selected = new SettingFragment();
+                        case R.id.nav_other:
+                            selected = new OtherFragment();
                             break;
                     }
 
