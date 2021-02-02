@@ -48,7 +48,7 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onAboutClick() {
-
+        startActivity(new Intent(getActivity(), AboutActivity.class));
     }
 
     private void onLogoutClick() {
