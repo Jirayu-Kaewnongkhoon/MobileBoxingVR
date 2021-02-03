@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -41,8 +43,10 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
     private UserManager user;
     private GameManager game;
 
-    private TextView username, playerStatus;
-    private Button btnLogout, btnStart, btnStop;
+    private TextView username, tvStrengthLevel, tvStaminaLevel, tvAgilityLevel;
+    private Button btnStart, btnStop;
+    private ProgressBar progressBar;
+    private ConstraintLayout profile;
 
     @Nullable
     @Override
@@ -70,17 +74,19 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
 
     private void initializeView(View v) {
         username = v.findViewById(R.id.tvUsername);
-        playerStatus = v.findViewById(R.id.tvPlayerStatus);
-        btnLogout = v.findViewById(R.id.btnLogout);
+        tvStrengthLevel = v.findViewById(R.id.tvStrengthLevel);
+        tvStaminaLevel = v.findViewById(R.id.tvStaminaLevel);
+        tvAgilityLevel = v.findViewById(R.id.tvAgilityLevel);
         btnStart = v.findViewById(R.id.btnStart);
         btnStop = v.findViewById(R.id.btnStop);
+        progressBar = v.findViewById(R.id.progressBar);
+        profile = v.findViewById(R.id.layoutGameProfile);
 
         user = UserManager.getInstance();
         game = GameManager.getInstance();
     }
 
     private void setupOnClick() {
-        btnLogout.setOnClickListener(this);
         btnStart.setOnClickListener(this);
         btnStop.setOnClickListener(this);
     }
@@ -92,11 +98,14 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
                 GameProfile gameProfile = snapshot.getValue(GameProfile.class);
 
                 if (gameProfile != null) {
-                    playerStatus.setText(gameProfile.toString());
+                    tvStrengthLevel.setText(String.valueOf(gameProfile.getStrengthLevel()));
+                    tvStaminaLevel.setText(String.valueOf(gameProfile.getStaminaLevel()));
+                    tvAgilityLevel.setText(String.valueOf(gameProfile.getAgilityLevel()));
                     Log.d(TAG, "onDataChange: " + gameProfile.toString());
-                } else {
-                    playerStatus.setText("NEW PLAYER");
                 }
+
+                profile.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -104,13 +113,6 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
                 Log.d(TAG, "onCancelled: " + error.getMessage());
             }
         });
-    }
-
-    public void onLogoutClick() {
-        user.logout();
-        BackgroundTask.getInstance(getActivity()).stopBackgroundTask();
-        startActivity(new Intent(getActivity(), LoginActivity.class));
-        getActivity().finish();
     }
 
     public void onStartJobClick() {
@@ -154,9 +156,6 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnLogout:
-                onLogoutClick();
-                break;
             case R.id.btnStart:
                 onStartJobClick();
                 break;
