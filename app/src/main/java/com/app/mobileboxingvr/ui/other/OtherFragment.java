@@ -18,7 +18,7 @@ import com.app.mobileboxingvr.ui.login.LoginActivity;
 
 public class OtherFragment extends Fragment implements View.OnClickListener {
 
-    private ConstraintLayout menuSetting, menuLogout;
+    private ConstraintLayout menuSetting, menuAbout, menuLogout;
 
     @Nullable
     @Override
@@ -33,16 +33,22 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
 
     private void initializeView(View view) {
         menuSetting = view.findViewById(R.id.menuSetting);
+        menuAbout = view.findViewById(R.id.menuAbout);
         menuLogout = view.findViewById(R.id.menuLogout);
     }
 
     private void setupOnClick() {
         menuSetting.setOnClickListener(this);
+        menuAbout.setOnClickListener(this);
         menuLogout.setOnClickListener(this);
     }
 
     private void onSettingClick() {
         startActivity(new Intent(getActivity(), SettingActivity.class));
+    }
+
+    private void onAboutClick() {
+        startActivity(new Intent(getActivity(), AboutActivity.class));
     }
 
     private void onLogoutClick() {
@@ -57,6 +63,9 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.menuSetting:
                 onSettingClick();
+                break;
+            case R.id.menuAbout:
+                onAboutClick();
                 break;
             case R.id.menuLogout:
                 onLogoutClick();

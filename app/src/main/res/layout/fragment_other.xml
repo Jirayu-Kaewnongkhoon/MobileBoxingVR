@@ -8,6 +8,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutProfile"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageView
+            android:id="@+id/imageUser"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.126"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textSize="19sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.189"
+            app:layout_constraintStart_toEndOf="@+id/imageUser"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.354" />
+
+        <TextView
+            android:id="@+id/tvUserLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Level 0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvUsername"
+            app:layout_constraintTop_toBottomOf="@+id/tvUsername"
+            app:layout_constraintVertical_bias="0.278" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/menuSetting"
         android:layout_width="match_parent"
@@ -16,7 +64,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/layoutProfile"
+        app:layout_constraintVertical_bias="0.035">
 
         <ImageView
             android:id="@+id/imageSetting"
@@ -34,11 +83,46 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="Setting"
-            android:textSize="23sp"
+            android:textSize="19sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageSetting"
             app:layout_constraintStart_toEndOf="@+id/imageSetting"
-            app:layout_constraintTop_toTopOf="@+id/imageSetting"
-            app:layout_constraintVertical_bias="0.6" />
+            app:layout_constraintTop_toTopOf="@+id/imageSetting" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/menuAbout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/menuSetting"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/menuSetting"
+        app:layout_constraintTop_toBottomOf="@+id/menuSetting"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageView
+            android:id="@+id/imageAbout"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:src="@drawable/ic_baseline_info_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.034"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="About"
+            android:textSize="19sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageAbout"
+            app:layout_constraintStart_toEndOf="@+id/imageAbout"
+            app:layout_constraintTop_toTopOf="@+id/imageAbout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -49,16 +133,16 @@
         android:layout_marginTop="4dp"
         android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/menuSetting"
-        app:layout_constraintStart_toStartOf="@+id/menuSetting"
-        app:layout_constraintTop_toBottomOf="@+id/menuSetting"
+        app:layout_constraintEnd_toEndOf="@+id/menuAbout"
+        app:layout_constraintStart_toStartOf="@+id/menuAbout"
+        app:layout_constraintTop_toBottomOf="@+id/menuAbout"
         app:layout_constraintVertical_bias="0.0">
 
         <ImageView
             android:id="@+id/imageLogout"
             android:layout_width="33dp"
             android:layout_height="33dp"
-            android:src="@drawable/ic_baseline_history_24"
+            android:src="@drawable/ic_baseline_exit_to_app_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.034"
@@ -70,11 +154,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="Logout"
-            android:textSize="23sp"
+            android:textSize="19sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageLogout"
             app:layout_constraintStart_toEndOf="@+id/imageLogout"
-            app:layout_constraintTop_toTopOf="@+id/imageLogout"
-            app:layout_constraintVertical_bias="0.6" />
+            app:layout_constraintTop_toTopOf="@+id/imageLogout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,7 +2,6 @@ package com.app.mobileboxingvr.ui.gameprofile;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -25,7 +26,6 @@ import com.app.mobileboxingvr.constants.MyConstants;
 import com.app.mobileboxingvr.models.GameProfile;
 import com.app.mobileboxingvr.helpers.GameManager;
 import com.app.mobileboxingvr.helpers.UserManager;
-import com.app.mobileboxingvr.ui.login.LoginActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -38,11 +38,13 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
 
     private final int REQUEST_CODE = 111;
 
-    private UserManager user;
     private GameManager game;
 
-    private TextView username, playerStatus;
-    private Button btnLogout, btnStart, btnStop;
+    private TextView tvStrengthLevel, tvStaminaLevel, tvAgilityLevel, tvTimestamp;
+    private TextView tvHealth, tvDamage, tvDefense;
+    private Button btnStart, btnStop;
+    private ProgressBar loading, strengthExpBar, staminaExpBar, agilityExpBar;
+    private ConstraintLayout profile;
 
     @Nullable
     @Override
@@ -52,8 +54,6 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
         initializeView(v);
         setupOnClick();
 
-        username.setText(user.getCurrentUser().getDisplayName());
-
         displayPlayerStatus();
 
         checkSharedPreference();
@@ -61,6 +61,7 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
         return v;
     }
 
+    // TODO : delete this
     private void checkSharedPreference() {
         Map<String, ?> allEntries = getActivity().getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE).getAll();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
@@ -69,34 +70,51 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
     }
 
     private void initializeView(View v) {
-        username = v.findViewById(R.id.tvUsername);
-        playerStatus = v.findViewById(R.id.tvPlayerStatus);
-        btnLogout = v.findViewById(R.id.btnLogout);
+        tvStrengthLevel = v.findViewById(R.id.tvStrengthLevel);
+        tvStaminaLevel = v.findViewById(R.id.tvStaminaLevel);
+        tvAgilityLevel = v.findViewById(R.id.tvAgilityLevel);
+
+        tvHealth = v.findViewById(R.id.tvHealth);
+        tvDamage = v.findViewById(R.id.tvDamage);
+        tvDefense = v.findViewById(R.id.tvDefense);
+
+        tvTimestamp = v.findViewById(R.id.tvTimestamp);
+
         btnStart = v.findViewById(R.id.btnStart);
         btnStop = v.findViewById(R.id.btnStop);
 
-        user = UserManager.getInstance();
+        loading = v.findViewById(R.id.loading);
+        strengthExpBar = v.findViewById(R.id.strengthExpBar);
+        staminaExpBar = v.findViewById(R.id.staminaExpBar);
+        agilityExpBar = v.findViewById(R.id.agilityExpBar);
+
+        profile = v.findViewById(R.id.layoutGameProfile);
+
         game = GameManager.getInstance();
     }
 
     private void setupOnClick() {
-        btnLogout.setOnClickListener(this);
         btnStart.setOnClickListener(this);
         btnStop.setOnClickListener(this);
     }
 
     private void displayPlayerStatus() {
+        profile.setVisibility(View.INVISIBLE);
+
         game.getGameProfile().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 GameProfile gameProfile = snapshot.getValue(GameProfile.class);
 
                 if (gameProfile != null) {
-                    playerStatus.setText(gameProfile.toString());
+
+                    setupGameProfile(gameProfile);
+                    
                     Log.d(TAG, "onDataChange: " + gameProfile.toString());
-                } else {
-                    playerStatus.setText("NEW PLAYER");
                 }
+
+                profile.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.GONE);
             }
 
             @Override
@@ -106,11 +124,21 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
         });
     }
 
-    public void onLogoutClick() {
-        user.logout();
-        BackgroundTask.getInstance(getActivity()).stopBackgroundTask();
-        startActivity(new Intent(getActivity(), LoginActivity.class));
-        getActivity().finish();
+    private void setupGameProfile(GameProfile gameProfile) {
+        tvStrengthLevel.setText(String.valueOf(gameProfile.getStrengthLevel()));
+        strengthExpBar.setProgress(gameProfile.getStrengthExp());
+
+        tvStaminaLevel.setText(String.valueOf(gameProfile.getStaminaLevel()));
+        staminaExpBar.setProgress(gameProfile.getStaminaExp());
+
+        tvAgilityLevel.setText(String.valueOf(gameProfile.getAgilityLevel()));
+        agilityExpBar.setProgress(gameProfile.getAgilityExp());
+
+        tvHealth.setText(String.valueOf(gameProfile.getHealth()));
+        tvDamage.setText(String.valueOf(gameProfile.getDamage()));
+        tvDefense.setText(String.valueOf(gameProfile.getDefense()));
+
+        tvTimestamp.setText("Last Update : " + gameProfile.getTimestamp());
     }
 
     public void onStartJobClick() {
@@ -154,9 +182,6 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnLogout:
-                onLogoutClick();
-                break;
             case R.id.btnStart:
                 onStartJobClick();
                 break;
