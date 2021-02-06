@@ -6,31 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.12" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutGameProfile"
-        android:visibility="invisible"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="380dp"
         android:layout_marginHorizontal="8dp"
-        android:background="@color/gameProfileBackground"
+        android:background="@drawable/game_profile_container"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUsername"
-        app:layout_constraintVertical_bias="0.204">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.29000002">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"
@@ -40,74 +26,232 @@
             app:layout_constraintGuide_percent="0.5" />
 
         <TextView
-            android:id="@+id/tvStrengthText"
+            android:id="@+id/tvPrimaryStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Strength"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="14dp"
+            android:text="Primary Status"
+            android:textSize="19sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.121"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.3" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvStaminaText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Stamina"
-            android:textStyle="bold"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/primaryStatus"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="180dp"
+            android:background="@drawable/game_status_container"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tvStrengthText"
-            app:layout_constraintTop_toBottomOf="@+id/tvStrengthText"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/tvAgilityText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Agility"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tvStaminaText"
-            app:layout_constraintTop_toBottomOf="@+id/tvStaminaText"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/tvStrengthLevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:text="0"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/tvStrengthText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvStrengthText"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/tvPrimaryStatus"
+            app:layout_constraintVertical_bias="0.0">
+
+            <TextView
+                android:id="@+id/tvStrengthText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Strength"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.118"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.134" />
+
+            <ProgressBar
+                android:id="@+id/strengthExpBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:progressTint="#FAD902"
+                app:layout_constraintStart_toStartOf="@+id/tvStrengthText"
+                app:layout_constraintTop_toBottomOf="@+id/tvStrengthText" />
+
+            <TextView
+                android:id="@+id/tvStrengthLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:text="0"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/tvStrengthText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvStrengthText" />
+
+            <TextView
+                android:id="@+id/tvStaminaText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Stamina"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvStrengthText"
+                app:layout_constraintTop_toBottomOf="@+id/tvStrengthText"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ProgressBar
+                android:id="@+id/staminaExpBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:progressTint="#FAD902"
+                app:layout_constraintStart_toStartOf="@+id/tvStaminaText"
+                app:layout_constraintTop_toBottomOf="@+id/tvStaminaText" />
+
+            <TextView
+                android:id="@+id/tvStaminaLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/tvStaminaText"
+                app:layout_constraintEnd_toEndOf="@+id/tvStrengthLevel"
+                app:layout_constraintTop_toTopOf="@+id/tvStaminaText" />
+
+            <TextView
+                android:id="@+id/tvAgilityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Agility"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvStaminaText"
+                app:layout_constraintTop_toBottomOf="@+id/tvStaminaText"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ProgressBar
+                android:id="@+id/agilityExpBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:progressTint="#FAD902"
+                app:layout_constraintStart_toStartOf="@+id/tvAgilityText"
+                app:layout_constraintTop_toBottomOf="@+id/tvAgilityText" />
+
+            <TextView
+                android:id="@+id/tvAgilityLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/tvAgilityText"
+                app:layout_constraintEnd_toEndOf="@+id/tvStaminaLevel"
+                app:layout_constraintTop_toTopOf="@+id/tvAgilityText" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/tvStaminaLevel"
+            android:id="@+id/tvSecondaryStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:text="Secondary Status"
+            android:textSize="19sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/tvStaminaText"
-            app:layout_constraintEnd_toEndOf="@+id/tvStrengthLevel"
-            app:layout_constraintTop_toTopOf="@+id/tvStaminaText"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/primaryStatus" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/game_status_container"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/tvSecondaryStatus">
+
+            <TextView
+                android:id="@+id/tvHealthText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Health"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.118"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.19" />
+
+            <TextView
+                android:id="@+id/tvHealth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:text="0"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/tvHealthText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvHealthText" />
+
+            <TextView
+                android:id="@+id/tvDamageText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Damage"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/tvHealthText"
+                app:layout_constraintTop_toBottomOf="@+id/tvHealthText" />
+
+            <TextView
+                android:id="@+id/tvDamage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/tvDamageText"
+                app:layout_constraintEnd_toEndOf="@+id/tvHealth"
+                app:layout_constraintTop_toTopOf="@+id/tvDamageText" />
+
+            <TextView
+                android:id="@+id/tvDefenseText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Defense"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/tvDamageText"
+                app:layout_constraintTop_toBottomOf="@+id/tvDamageText" />
+
+            <TextView
+                android:id="@+id/tvDefense"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/tvDefenseText"
+                app:layout_constraintEnd_toEndOf="@+id/tvDamage"
+                app:layout_constraintTop_toTopOf="@+id/tvDefenseText" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/tvAgilityLevel"
+            android:id="@+id/tvTimestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Last Update : -"
+            android:textSize="8sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/tvAgilityText"
-            app:layout_constraintEnd_toEndOf="@+id/tvStaminaLevel"
-            app:layout_constraintTop_toTopOf="@+id/tvAgilityText" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -142,7 +286,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/loading"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
