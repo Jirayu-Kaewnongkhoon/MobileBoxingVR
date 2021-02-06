@@ -42,10 +42,10 @@
             app:layout_constraintHorizontal_bias="0.189"
             app:layout_constraintStart_toEndOf="@+id/imageUser"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.354" />
+            app:layout_constraintVertical_bias="0.3" />
 
         <TextView
-            android:id="@+id/tvUserLevel"
+            android:id="@+id/tvPlayerLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Level 0"
@@ -53,6 +53,14 @@
             app:layout_constraintStart_toStartOf="@+id/tvUsername"
             app:layout_constraintTop_toBottomOf="@+id/tvUsername"
             app:layout_constraintVertical_bias="0.278" />
+
+        <ProgressBar
+            android:id="@+id/playerExpBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/tvPlayerLevel"
+            app:layout_constraintTop_toBottomOf="@+id/tvPlayerLevel" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
