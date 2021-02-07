@@ -2,9 +2,12 @@ package com.app.mobileboxingvr.ui.other;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,12 +16,21 @@ import androidx.fragment.app.Fragment;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.background.BackgroundTask;
+import com.app.mobileboxingvr.helpers.GameManager;
 import com.app.mobileboxingvr.helpers.UserManager;
+import com.app.mobileboxingvr.models.GameProfile;
 import com.app.mobileboxingvr.ui.login.LoginActivity;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 public class OtherFragment extends Fragment implements View.OnClickListener {
 
+    private static final String TAG = "OtherFragment";
+
     private ConstraintLayout menuSetting, menuAbout, menuLogout;
+    private TextView tvUsername, tvPlayerLevel;
+    private ProgressBar playerExpBar;
 
     @Nullable
     @Override
@@ -28,6 +40,8 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
         initializeView(v);
         setupOnClick();
 
+        displayPlayerInfo();
+
         return v;
     }
 
@@ -35,12 +49,38 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
         menuSetting = view.findViewById(R.id.menuSetting);
         menuAbout = view.findViewById(R.id.menuAbout);
         menuLogout = view.findViewById(R.id.menuLogout);
+
+        tvUsername = view.findViewById(R.id.tvUsername);
+        tvPlayerLevel = view.findViewById(R.id.tvPlayerLevel);
+
+        playerExpBar = view.findViewById(R.id.playerExpBar);
     }
 
     private void setupOnClick() {
         menuSetting.setOnClickListener(this);
         menuAbout.setOnClickListener(this);
         menuLogout.setOnClickListener(this);
+    }
+
+    private void displayPlayerInfo() {
+        tvUsername.setText(UserManager.getInstance().getCurrentUser().getDisplayName());
+
+        GameManager.getInstance().getGameProfile().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                GameProfile gameProfile = snapshot.getValue(GameProfile.class);
+
+                if (gameProfile != null) {
+                    tvPlayerLevel.setText("Level " + gameProfile.getPlayerLevel());
+                    playerExpBar.setProgress(gameProfile.getPlayerExp());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "onCancelled: " + error.getMessage());
+            }
+        });
     }
 
     private void onSettingClick() {

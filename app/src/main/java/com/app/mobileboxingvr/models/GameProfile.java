@@ -13,6 +13,8 @@ public class GameProfile {
     private int health;
     private int damage;
     private int defense;
+    private int playerLevel;
+    private int playerExp;
     private List<Integer> skills;
     private String timestamp;
 
@@ -99,6 +101,22 @@ public class GameProfile {
         this.defense = defense;
     }
 
+    public int getPlayerLevel() {
+        return playerLevel;
+    }
+
+    public void setPlayerLevel(int playerLevel) {
+        this.playerLevel = playerLevel;
+    }
+
+    public int getPlayerExp() {
+        return playerExp;
+    }
+
+    public void setPlayerExp(int playerExp) {
+        this.playerExp = playerExp;
+    }
+
     public String getTimestamp() {
         return timestamp;
     }
@@ -119,6 +137,8 @@ public class GameProfile {
                 ", health=" + health +
                 ", damage=" + damage +
                 ", defense=" + defense +
+                ", playerLevel=" + playerLevel +
+                ", playerExp=" + playerExp +
                 ", timestamp='" + timestamp + '\'' +
                 '}';
     }
