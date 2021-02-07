@@ -32,6 +32,8 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
     private TextView tvPlayerName, tvPlayerLevel;
     private ProgressBar playerExpBar;
 
+    private GameManager game;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -54,6 +56,8 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
         tvPlayerLevel = view.findViewById(R.id.tvPlayerLevel);
 
         playerExpBar = view.findViewById(R.id.playerExpBar);
+
+        game = new GameManager();
     }
 
     private void setupOnClick() {
@@ -63,7 +67,7 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
     }
 
     private void displayPlayerInfo() {
-        GameManager.getInstance().getGameProfile().addValueEventListener(new ValueEventListener() {
+        game.getGameProfile().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 GameProfile gameProfile = snapshot.getValue(GameProfile.class);

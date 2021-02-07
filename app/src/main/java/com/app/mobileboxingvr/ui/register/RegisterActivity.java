@@ -22,6 +22,7 @@ import com.google.firebase.auth.AuthResult;
 public class RegisterActivity extends AppCompatActivity {
 
     private UserManager user;
+    private GameManager game;
 
     private EditText username, email, password;
 
@@ -39,6 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
         password = findViewById(R.id.etPassword);
 
         user = UserManager.getInstance();
+        game = new GameManager();
     }
 
     public void onRegisterClick(View view) {
@@ -69,6 +71,6 @@ public class RegisterActivity extends AppCompatActivity {
         gameProfile.setPlayerName(username.getText().toString().trim());
         gameProfile.setTimestamp(ActivityManager.getInstance(getApplicationContext()).getTimestamp());
 
-        GameManager.getInstance().updateGameProfile(gameProfile);
+        game.updateGameProfile(gameProfile);
     }
 }

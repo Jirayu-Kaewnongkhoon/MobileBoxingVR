@@ -90,7 +90,7 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
 
         profile = v.findViewById(R.id.layoutGameProfile);
 
-        game = GameManager.getInstance();
+        game = new GameManager();
     }
 
     private void setupOnClick() {

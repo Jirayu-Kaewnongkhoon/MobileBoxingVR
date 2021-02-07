@@ -41,7 +41,7 @@ public class ActivityWork extends Worker {
     @Override
     public Result doWork() {
 
-        game = GameManager.getInstance();
+        game = new GameManager();
 
         loadUserActivity();
 
