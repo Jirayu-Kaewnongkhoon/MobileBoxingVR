@@ -29,7 +29,7 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "OtherFragment";
 
     private ConstraintLayout menuSetting, menuAbout, menuLogout;
-    private TextView tvUsername, tvPlayerLevel;
+    private TextView tvPlayerName, tvPlayerLevel;
     private ProgressBar playerExpBar;
 
     @Nullable
@@ -50,7 +50,7 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
         menuAbout = view.findViewById(R.id.menuAbout);
         menuLogout = view.findViewById(R.id.menuLogout);
 
-        tvUsername = view.findViewById(R.id.tvUsername);
+        tvPlayerName = view.findViewById(R.id.tvPlayerName);
         tvPlayerLevel = view.findViewById(R.id.tvPlayerLevel);
 
         playerExpBar = view.findViewById(R.id.playerExpBar);
@@ -63,14 +63,13 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
     }
 
     private void displayPlayerInfo() {
-        tvUsername.setText(UserManager.getInstance().getCurrentUser().getDisplayName());
-
         GameManager.getInstance().getGameProfile().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 GameProfile gameProfile = snapshot.getValue(GameProfile.class);
 
                 if (gameProfile != null) {
+                    tvPlayerName.setText(gameProfile.getPlayerName());
                     tvPlayerLevel.setText("Level " + gameProfile.getPlayerLevel());
                     playerExpBar.setProgress(gameProfile.getPlayerExp());
                 }

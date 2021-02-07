@@ -5,14 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.app.mobileboxingvr.MainActivity;
 import com.app.mobileboxingvr.R;
+import com.app.mobileboxingvr.helpers.ActivityManager;
+import com.app.mobileboxingvr.helpers.GameManager;
 import com.app.mobileboxingvr.helpers.UserManager;
+import com.app.mobileboxingvr.models.GameProfile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -32,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initializeView() {
-        username = findViewById(R.id.etUsername);
+        username = findViewById(R.id.etPlayerName);
         email = findViewById(R.id.etEmail);
         password = findViewById(R.id.etPassword);
 
@@ -47,7 +49,10 @@ public class RegisterActivity extends AppCompatActivity {
 
                         if (task.isSuccessful()) {
 
-                            updateProfile();
+                            updateGameProfile();
+
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            finish();
 
                         } else {
 
@@ -59,21 +64,11 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
-    public void updateProfile() {
-        user.updateProfile(username.getText().toString().trim())
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+    public void updateGameProfile() {
+        GameProfile gameProfile = new GameProfile();
+        gameProfile.setPlayerName(username.getText().toString().trim());
+        gameProfile.setTimestamp(ActivityManager.getInstance(getApplicationContext()).getTimestamp());
 
-                        if (task.isSuccessful()) {
-
-                            Log.d("REGISTER", "updateProfile: " + user.getCurrentUser().getDisplayName());
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            finish();
-
-                        }
-
-                    }
-                });
+        GameManager.getInstance().updateGameProfile(gameProfile);
     }
 }
