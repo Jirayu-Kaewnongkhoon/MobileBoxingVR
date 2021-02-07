@@ -6,27 +6,18 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class GameManager {
 
-    public static GameManager instance;
-
     private FirebaseDatabase database;
     private DatabaseReference myRef;
 
     private UserManager user;
     private String userID;
 
-    private GameManager() {
+    public GameManager() {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("game_profile");
 
         user = UserManager.getInstance();
         userID = user.getCurrentUser().getUid();
-    }
-
-    public static GameManager getInstance() {
-        if (instance == null) {
-            instance = new GameManager();
-        }
-        return instance;
     }
 
     /**

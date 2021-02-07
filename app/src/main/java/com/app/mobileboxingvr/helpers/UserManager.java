@@ -63,18 +63,4 @@ public class UserManager {
         auth.signOut();
     }
 
-    /**
-     *  --updateProfile--
-     *  Set display name with Firebase Authentication
-     */
-
-    public Task<Void> updateProfile(String username) {
-
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(username)
-                .build();
-
-        return auth.getCurrentUser().updateProfile(profileUpdates);
-    }
-
 }

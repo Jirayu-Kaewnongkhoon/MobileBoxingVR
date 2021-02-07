@@ -13,6 +13,7 @@ public class GameProfile {
     private int health;
     private int damage;
     private int defense;
+    private String playerName;
     private int playerLevel;
     private int playerExp;
     private List<Integer> skills;
@@ -101,6 +102,14 @@ public class GameProfile {
         this.defense = defense;
     }
 
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
     public int getPlayerLevel() {
         return playerLevel;
     }
@@ -137,6 +146,7 @@ public class GameProfile {
                 ", health=" + health +
                 ", damage=" + damage +
                 ", defense=" + defense +
+                ", playerName=" + playerName +
                 ", playerLevel=" + playerLevel +
                 ", playerExp=" + playerExp +
                 ", timestamp='" + timestamp + '\'' +
