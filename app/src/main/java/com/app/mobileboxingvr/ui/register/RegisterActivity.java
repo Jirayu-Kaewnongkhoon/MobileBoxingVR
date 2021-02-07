@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,13 +20,23 @@ import com.app.mobileboxingvr.models.GameProfile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private UserManager user;
-    private GameManager game;
+    private static final String TAG = "RegisterActivity";
 
-    private EditText username, email, password;
+    private UserManager user;
+
+    private EditText etPlayerName, etEmail, etPassword;
+
+    private List<String> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,43 +46,114 @@ public class RegisterActivity extends AppCompatActivity {
         initializeView();
     }
 
-    private void initializeView() {
-        username = findViewById(R.id.etPlayerName);
-        email = findViewById(R.id.etEmail);
-        password = findViewById(R.id.etPassword);
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-        user = UserManager.getInstance();
-        game = new GameManager();
-    }
-
-    public void onRegisterClick(View view) {
-        user.register(email.getText().toString().trim(), password.getText().toString().trim())
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        FirebaseDatabase.getInstance().getReference("game_profile")
+                .addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        if (task.isSuccessful()) {
-
-                            updateGameProfile();
-
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            finish();
-
-                        } else {
-
-                            Toast.makeText(getApplicationContext(), "Registration failed", Toast.LENGTH_LONG).show();
-
+                        for (DataSnapshot gameProfile : snapshot.getChildren()) {
+                            GameProfile profile = gameProfile.getValue(GameProfile.class);
+                            list.add(profile.getPlayerName());
                         }
 
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.d(TAG, "onCancelled: " + error.getMessage());
                     }
                 });
     }
 
-    public void updateGameProfile() {
+    private void initializeView() {
+        etPlayerName = findViewById(R.id.etPlayerName);
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+
+        user = UserManager.getInstance();
+
+        list = new ArrayList<>();
+    }
+
+    public void onRegisterClick(View view) {
+        String playerName = etPlayerName.getText().toString().trim();
+        String email = etEmail.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
+
+        boolean isValid = registerValidator(playerName, email, password);
+
+        if (isValid) {
+            user.register(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+
+                    if (task.isSuccessful()) {
+
+                        updateGameProfile(playerName);
+
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
+
+                    } else {
+
+                        Toast.makeText(getApplicationContext(), "Registration failed", Toast.LENGTH_LONG).show();
+
+                    }
+
+                }
+            });
+        }
+    }
+
+    public void updateGameProfile(String playerName) {
         GameProfile gameProfile = new GameProfile();
-        gameProfile.setPlayerName(username.getText().toString().trim());
+        gameProfile.setPlayerName(playerName);
         gameProfile.setTimestamp(ActivityManager.getInstance(getApplicationContext()).getTimestamp());
 
+        GameManager game = new GameManager();
         game.updateGameProfile(gameProfile);
+    }
+
+    private boolean registerValidator(String playerName, String email, String password) {
+
+        if (playerName.isEmpty()) {
+            etPlayerName.setError("Field can not be empty");
+            return false;
+        }
+
+        if (isExist(playerName)) {
+            etPlayerName.setError("This name is already taken");
+            return false;
+        }
+
+        if (email.isEmpty()) {
+            etEmail.setError("Field can not be empty");
+            return false;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            etEmail.setError("Invalid Email!");
+            return false;
+        }
+
+        if (password.isEmpty()) {
+            etPassword.setError("Field can not be empty");
+            return false;
+        }
+
+        if (password.length() < 6) {
+            etPassword.setError("Password should contain 6 characters!");
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isExist(String playerName) {
+        return list.contains(playerName);
     }
 }
