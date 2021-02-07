@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MobileBoxingVR</string>
+
+    <string name="register_text1">Don\'t have an account?</string>
+    <string name="register_text2"><u>Sign Up</u></string>
+
+    <string name="login_text1">Already have an account?</string>
+    <string name="login_text2"><u>Log in</u></string>
 </resources>

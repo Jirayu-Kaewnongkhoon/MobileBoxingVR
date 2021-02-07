@@ -17,6 +17,7 @@ import com.app.mobileboxingvr.helpers.ActivityManager;
 import com.app.mobileboxingvr.helpers.GameManager;
 import com.app.mobileboxingvr.helpers.UserManager;
 import com.app.mobileboxingvr.models.GameProfile;
+import com.app.mobileboxingvr.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -77,6 +78,14 @@ public class RegisterActivity extends AppCompatActivity {
         user = UserManager.getInstance();
 
         list = new ArrayList<>();
+    }
+
+    public void onLoginClick(View view) {
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(intent);
+        finish();
     }
 
     public void onRegisterClick(View view) {
