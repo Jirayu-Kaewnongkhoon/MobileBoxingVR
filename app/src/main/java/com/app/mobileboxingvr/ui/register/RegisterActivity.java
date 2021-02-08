@@ -79,6 +79,10 @@ public class RegisterActivity extends AppCompatActivity {
         list = new ArrayList<>();
     }
 
+    public void onLoginClick(View view) {
+        finish();
+    }
+
     public void onRegisterClick(View view) {
         String playerName = etPlayerName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
