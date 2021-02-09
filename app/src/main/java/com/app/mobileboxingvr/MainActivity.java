@@ -34,16 +34,6 @@ public class MainActivity extends AppCompatActivity {
 //            startActivity(new Intent(this, LoginActivity.class));
 //            finish();
 //        }
-//
-//        if (StepCounter.getInstance(this).getStepSensor() == null) {
-//
-//            // app cannot do background task
-//            btnStart.setClickable(false);
-//            btnStop.setClickable(false);
-//
-//            Log.d("MAIN", "onStart: Not Clickable");
-//
-//        }
 
     }
 

@@ -3,7 +3,7 @@ package com.app.mobileboxingvr.background;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
+import android.util.Log;
 
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
@@ -20,6 +20,8 @@ import com.app.mobileboxingvr.works.ActivityWork;
 import java.util.concurrent.TimeUnit;
 
 public class BackgroundTask {
+
+    private static final String TAG = "BackgroundTask";
 
     private static BackgroundTask instance;
 
@@ -53,7 +55,7 @@ public class BackgroundTask {
                         getPeriodicWorkRequest()
                 );
 
-        Toast.makeText(context, "Job started..", Toast.LENGTH_LONG).show();
+        Log.d(TAG, "startBackgroundTask: ");
     }
 
     /**
@@ -68,7 +70,7 @@ public class BackgroundTask {
 
         WorkManager.getInstance(context).cancelAllWork();
 
-        Toast.makeText(context, "Job stopped..", Toast.LENGTH_LONG).show();
+        Log.d(TAG, "stopBackgroundTask: ");
     }
 
     /**
@@ -81,7 +83,7 @@ public class BackgroundTask {
             Intent intent = new Intent(context, LocationTracking.class);
             intent.setAction(MyConstants.ACTION_START_LOCATION_SERVICE);
             context.startService(intent);
-            Toast.makeText(context, "Location service started", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "startLocationService: ");
         }
     }
 
@@ -95,7 +97,7 @@ public class BackgroundTask {
             Intent intent = new Intent(context, LocationTracking.class);
             intent.setAction(MyConstants.ACTION_STOP_LOCATION_SERVICE);
             context.startService(intent);
-            Toast.makeText(context, "Location service stopped", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "stopLocationService: ");
         }
     }
 
@@ -124,7 +126,7 @@ public class BackgroundTask {
             Intent intent = new Intent(context, StepCounter.class);
             intent.setAction(MyConstants.ACTION_START_STEP_COUNTER_SERVICE);
             context.startService(intent);
-            Toast.makeText(context, "StepCounter service started", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "startStepCounterService: ");
         }
     }
 
@@ -138,7 +140,7 @@ public class BackgroundTask {
             Intent intent = new Intent(context, StepCounter.class);
             intent.setAction(MyConstants.ACTION_STOP_STEP_COUNTER_SERVICE);
             context.startService(intent);
-            Toast.makeText(context, "StepCounter service stopped", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "stopStepCounterService: ");
         }
     }
 

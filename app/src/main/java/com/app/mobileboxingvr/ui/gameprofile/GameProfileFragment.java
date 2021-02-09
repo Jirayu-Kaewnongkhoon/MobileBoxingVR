@@ -1,6 +1,7 @@
 package com.app.mobileboxingvr.ui.gameprofile;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -25,14 +25,13 @@ import com.app.mobileboxingvr.background.BackgroundTask;
 import com.app.mobileboxingvr.constants.MyConstants;
 import com.app.mobileboxingvr.models.GameProfile;
 import com.app.mobileboxingvr.helpers.GameManager;
-import com.app.mobileboxingvr.helpers.UserManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
 
-public class GameProfileFragment extends Fragment implements View.OnClickListener {
+public class GameProfileFragment extends Fragment {
 
     private static final String TAG = "GameProfileFragment";
 
@@ -42,7 +41,6 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
 
     private TextView tvStrengthLevel, tvStaminaLevel, tvAgilityLevel, tvTimestamp;
     private TextView tvHealth, tvDamage, tvDefense;
-    private Button btnStart, btnStop;
     private ProgressBar loading, strengthExpBar, staminaExpBar, agilityExpBar;
     private ConstraintLayout profile;
 
@@ -52,7 +50,8 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
         View v =  inflater.inflate(R.layout.fragment_gameprofile, container, false);
 
         initializeView(v);
-        setupOnClick();
+
+        permissionCheck();
 
         displayPlayerStatus();
 
@@ -80,9 +79,6 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
 
         tvTimestamp = v.findViewById(R.id.tvTimestamp);
 
-        btnStart = v.findViewById(R.id.btnStart);
-        btnStop = v.findViewById(R.id.btnStop);
-
         loading = v.findViewById(R.id.loading);
         strengthExpBar = v.findViewById(R.id.strengthExpBar);
         staminaExpBar = v.findViewById(R.id.staminaExpBar);
@@ -91,11 +87,6 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
         profile = v.findViewById(R.id.layoutGameProfile);
 
         game = new GameManager();
-    }
-
-    private void setupOnClick() {
-        btnStart.setOnClickListener(this);
-        btnStop.setOnClickListener(this);
     }
 
     private void displayPlayerStatus() {
@@ -141,24 +132,27 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
         tvTimestamp.setText("Last Update : " + gameProfile.getTimestamp());
     }
 
-    public void onStartJobClick() {
+    private void permissionCheck() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(
-                    getActivity(),
-                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_CODE);
+            Dialog dialog = new Dialog(getActivity());
+            dialog.setContentView(R.layout.dialog_permission);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
 
-        } else {
+            Button btnOK = dialog.findViewById(R.id.btnOK);
+            btnOK.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
 
-            BackgroundTask.getInstance(getActivity()).startBackgroundTask();
-            Log.d(TAG, "onStartJobClick: ");
+                    requestPermissions(
+                            new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                            REQUEST_CODE);
+                }
+            });
 
         }
-    }
-
-    public void onStopJobClick() {
-        BackgroundTask.getInstance(getActivity()).stopBackgroundTask();
     }
 
     @Override
@@ -167,7 +161,19 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                BackgroundTask.getInstance(getActivity()).startBackgroundTask();
+                Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.dialog_tracking);
+                dialog.show();
+
+                Button btnClose = dialog.findViewById(R.id.btnClose);
+                btnClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        BackgroundTask.getInstance(getActivity()).startBackgroundTask();
+                        dialog.dismiss();
+                    }
+                });
+
                 Toast.makeText(getContext(), "Permission granted!", Toast.LENGTH_LONG).show();
 
             } else {
@@ -176,18 +182,6 @@ public class GameProfileFragment extends Fragment implements View.OnClickListene
 
             }
 
-        }
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btnStart:
-                onStartJobClick();
-                break;
-            case R.id.btnStop:
-                onStopJobClick();
-                break;
         }
     }
 }
