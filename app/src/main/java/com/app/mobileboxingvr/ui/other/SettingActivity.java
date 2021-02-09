@@ -3,13 +3,12 @@ package com.app.mobileboxingvr.ui.other;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SwitchPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -82,8 +81,8 @@ public class SettingActivity extends AppCompatActivity {
                 dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
 
-                Button btnOK = dialog.findViewById(R.id.btnOK);
-                btnOK.setOnClickListener(new View.OnClickListener() {
+                Button btnAccept = dialog.findViewById(R.id.btnAccept);
+                btnAccept.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         dialog.dismiss();
@@ -93,6 +92,10 @@ public class SettingActivity extends AppCompatActivity {
                                 REQUEST_CODE);
                     }
                 });
+
+            } else {
+
+                BackgroundTask.getInstance(getActivity()).startBackgroundTask();
 
             }
         }
@@ -105,13 +108,18 @@ public class SettingActivity extends AppCompatActivity {
 
                     Dialog dialog = new Dialog(getActivity());
                     dialog.setContentView(R.layout.dialog_tracking);
+                    dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            BackgroundTask.getInstance(getActivity()).startBackgroundTask();
+                        }
+                    });
                     dialog.show();
 
                     Button btnClose = dialog.findViewById(R.id.btnClose);
                     btnClose.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            BackgroundTask.getInstance(getActivity()).startBackgroundTask();
                             dialog.dismiss();
                         }
                     });

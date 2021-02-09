@@ -3,6 +3,7 @@ package com.app.mobileboxingvr.ui.gameprofile;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -140,8 +141,8 @@ public class GameProfileFragment extends Fragment {
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();
 
-            Button btnOK = dialog.findViewById(R.id.btnOK);
-            btnOK.setOnClickListener(new View.OnClickListener() {
+            Button btnAccept = dialog.findViewById(R.id.btnAccept);
+            btnAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     dialog.dismiss();
@@ -163,13 +164,18 @@ public class GameProfileFragment extends Fragment {
 
                 Dialog dialog = new Dialog(getActivity());
                 dialog.setContentView(R.layout.dialog_tracking);
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        BackgroundTask.getInstance(getActivity()).startBackgroundTask();
+                    }
+                });
                 dialog.show();
 
                 Button btnClose = dialog.findViewById(R.id.btnClose);
                 btnClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        BackgroundTask.getInstance(getActivity()).startBackgroundTask();
                         dialog.dismiss();
                     }
                 });
@@ -178,6 +184,7 @@ public class GameProfileFragment extends Fragment {
 
             } else {
 
+                // TODO : dialog => tell user to enable from setting
                 Toast.makeText(getContext(), "Permission denied!", Toast.LENGTH_LONG).show();
 
             }
