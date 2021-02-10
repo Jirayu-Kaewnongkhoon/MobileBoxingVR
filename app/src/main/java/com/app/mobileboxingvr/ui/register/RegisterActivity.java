@@ -9,6 +9,7 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.app.mobileboxingvr.MainActivity;
@@ -35,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     private UserManager user;
 
     private EditText etPlayerName, etEmail, etPassword;
+    private ProgressBar registerLoading;
 
     private List<String> list;
 
@@ -74,6 +76,8 @@ public class RegisterActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
 
+        registerLoading = findViewById(R.id.registerLoading);
+
         user = UserManager.getInstance();
 
         list = new ArrayList<>();
@@ -91,6 +95,8 @@ public class RegisterActivity extends AppCompatActivity {
         boolean isValid = registerValidator(playerName, email, password);
 
         if (isValid) {
+            registerLoading.setVisibility(View.VISIBLE);
+
             user.register(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -107,6 +113,8 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Registration failed", Toast.LENGTH_LONG).show();
 
                     }
+
+                    registerLoading.setVisibility(View.INVISIBLE);
 
                 }
             });
