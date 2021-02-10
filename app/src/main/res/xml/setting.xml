@@ -7,8 +7,9 @@
         app:icon="@drawable/ic_baseline_settings_24">
 
         <SwitchPreferenceCompat
-            app:key="isServiceRunning"
+            app:key="isServiceEnabled"
             app:title="Enable Services"
+            app:defaultValue="true"
             app:summary="Start/Stop activities tracking"/>
 
     </PreferenceCategory>

@@ -2,14 +2,24 @@ package com.app.mobileboxingvr.ui.other;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SwitchPreferenceCompat;
 
+import android.Manifest;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.app.mobileboxingvr.R;
+import com.app.mobileboxingvr.background.BackgroundTask;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -40,15 +50,98 @@ public class SettingActivity extends AppCompatActivity {
 
     public static class MySettingsFragment extends PreferenceFragmentCompat {
 
+        private final int REQUEST_CODE = 111;
+
         SharedPreferences.OnSharedPreferenceChangeListener listener =
                 new SharedPreferences.OnSharedPreferenceChangeListener() {
                     @Override
-                    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-                        if (s.equals("isServiceRunning")) {
-                            Log.i("SETTING", "Notifications : " + sharedPreferences.getBoolean(s, false));
+                    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+                        if (key.equals("isServiceEnabled")) {
+
+                            boolean isServiceEnabled = sharedPreferences.getBoolean(key, false);
+                            Log.d("SETTING", "onSharedPreferenceChanged : " + isServiceEnabled);
+
+                            if (isServiceEnabled) {
+                                permissionCheck();
+                            } else {
+                                BackgroundTask.getInstance(getContext()).stopBackgroundTask();
+                            }
+
                         }
+
                     }
                 };
+
+        private void permissionCheck() {
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.dialog_permission);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+
+                Button btnAccept = dialog.findViewById(R.id.btnAccept);
+                btnAccept.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+
+                        requestPermissions(
+                                new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                                REQUEST_CODE);
+                    }
+                });
+
+            } else {
+
+                BackgroundTask.getInstance(getActivity()).startBackgroundTask();
+
+            }
+        }
+
+        @Override
+        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+            if (requestCode == REQUEST_CODE) {
+
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Dialog dialog = new Dialog(getActivity());
+                    dialog.setContentView(R.layout.dialog_tracking);
+                    dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            BackgroundTask.getInstance(getActivity()).startBackgroundTask();
+                        }
+                    });
+                    dialog.show();
+
+                    Button btnTrackingClose = dialog.findViewById(R.id.btnTrackingClose);
+                    btnTrackingClose.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    Toast.makeText(getContext(), "Permission granted!", Toast.LENGTH_LONG).show();
+
+                } else {
+
+                    SwitchPreferenceCompat enableService = findPreference("isServiceEnabled");
+                    if (enableService != null) {
+                        enableService.setChecked(false);
+                    }
+
+                    boolean isServiceEnabled = getPreferenceManager().getSharedPreferences().getBoolean("isServiceEnabled", false);
+                    Log.d("SETTING", "onRequestPermissionsResult: " + isServiceEnabled);
+
+                    Toast.makeText(getContext(), "Permission denied!", Toast.LENGTH_LONG).show();
+
+                }
+
+            }
+        }
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
