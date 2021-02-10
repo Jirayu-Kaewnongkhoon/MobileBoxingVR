@@ -191,6 +191,7 @@ public class LocationTracking extends Service implements LocationListener {
         Log.d(TAG, "onProviderDisabled: " + provider);
 
         // ask for enable GPS
+        // TODO : ask before task start (dialog?)
         if (provider.equals("gps")) {
             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
         }

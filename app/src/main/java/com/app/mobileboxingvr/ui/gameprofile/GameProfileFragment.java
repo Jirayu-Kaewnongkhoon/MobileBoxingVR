@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -134,25 +135,32 @@ public class GameProfileFragment extends Fragment {
     }
 
     private void permissionCheck() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        SharedPreferences pref = getActivity().getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
+        boolean isFirstTime = pref.getBoolean("isFirstTime", true);
 
-            Dialog dialog = new Dialog(getActivity());
-            dialog.setContentView(R.layout.dialog_permission);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
+        if (isFirstTime) {
+            pref.edit().putBoolean("isFirstTime", false).apply();
 
-            Button btnAccept = dialog.findViewById(R.id.btnAccept);
-            btnAccept.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                    requestPermissions(
-                            new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
-                            REQUEST_CODE);
-                }
-            });
+                Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.dialog_permission);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
 
+                Button btnAccept = dialog.findViewById(R.id.btnAccept);
+                btnAccept.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+
+                        requestPermissions(
+                                new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                                REQUEST_CODE);
+                    }
+                });
+
+            }
         }
     }
 
@@ -172,8 +180,8 @@ public class GameProfileFragment extends Fragment {
                 });
                 dialog.show();
 
-                Button btnClose = dialog.findViewById(R.id.btnClose);
-                btnClose.setOnClickListener(new View.OnClickListener() {
+                Button btnTrackingClose = dialog.findViewById(R.id.btnTrackingClose);
+                btnTrackingClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         dialog.dismiss();
@@ -184,7 +192,19 @@ public class GameProfileFragment extends Fragment {
 
             } else {
 
-                // TODO : dialog => tell user to enable from setting
+                Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.dialog_service_info);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+
+                Button btnServiceInfoClose = dialog.findViewById(R.id.btnServiceInfoClose);
+                btnServiceInfoClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
                 Toast.makeText(getContext(), "Permission denied!", Toast.LENGTH_LONG).show();
 
             }

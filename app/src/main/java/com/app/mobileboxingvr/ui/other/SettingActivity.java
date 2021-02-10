@@ -116,8 +116,8 @@ public class SettingActivity extends AppCompatActivity {
                     });
                     dialog.show();
 
-                    Button btnClose = dialog.findViewById(R.id.btnClose);
-                    btnClose.setOnClickListener(new View.OnClickListener() {
+                    Button btnTrackingClose = dialog.findViewById(R.id.btnTrackingClose);
+                    btnTrackingClose.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             dialog.dismiss();
@@ -128,7 +128,7 @@ public class SettingActivity extends AppCompatActivity {
 
                 } else {
 
-                    SwitchPreferenceCompat enableService = (SwitchPreferenceCompat) findPreference("isServiceEnabled");
+                    SwitchPreferenceCompat enableService = findPreference("isServiceEnabled");
                     if (enableService != null) {
                         enableService.setChecked(false);
                     }
