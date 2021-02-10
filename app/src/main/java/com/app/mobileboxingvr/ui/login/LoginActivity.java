@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.app.mobileboxingvr.MainActivity;
@@ -23,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     private UserManager user;
 
     private EditText etEmail, etPassword;
+    private ProgressBar loginLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,8 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
 
+        loginLoading = findViewById(R.id.loginLoading);
+
         user = UserManager.getInstance();
     }
 
@@ -56,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         boolean isValid = loginValidator(email, password);
 
         if (isValid) {
+            loginLoading.setVisibility(View.VISIBLE);
+
             user.login(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -70,6 +76,8 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Authentication failed", Toast.LENGTH_LONG).show();
 
                     }
+
+                    loginLoading.setVisibility(View.INVISIBLE);
 
                 }
             });
