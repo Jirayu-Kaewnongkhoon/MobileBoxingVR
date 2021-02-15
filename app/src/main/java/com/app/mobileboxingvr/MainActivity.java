@@ -37,9 +37,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     *  --initializeView--
+     *  Setup view and instantiate object
+     */
+
     private void initializeView() {
         nav = findViewById(R.id.bottom_navigation);
     }
+
+    /**
+     *  --setupNav--
+     *  Setup navigation bar
+     */
 
     private void setupNav() {
         nav.setOnNavigationItemSelectedListener(navListener);

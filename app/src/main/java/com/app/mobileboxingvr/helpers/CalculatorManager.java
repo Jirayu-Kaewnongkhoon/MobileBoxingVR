@@ -11,11 +11,21 @@ public class CalculatorManager {
         this.activity = activity;
     }
 
+    /**
+     *  --getStrengthExp--
+     *  Calculate activity to Strength Exp
+     */
+
     public int getStrengthExp() {
         int stepCounter = activity.getStepCounter();
 
         return (int) Math.round(stepCounter * MyConstants.EXP_PER_STEP);
     }
+
+    /**
+     *  --getStaminaExp--
+     *  Calculate activity to Stamina Exp
+     */
 
     public int getStaminaExp() {
         int stepCounter = activity.getStepCounter();
@@ -24,9 +34,19 @@ public class CalculatorManager {
         return stepCounter / timeSpent;
     }
 
+    /**
+     *  --getAgilityExp--
+     *  Calculate activity to Agility Exp
+     */
+
     public int getAgilityExp() {
         return (int) Math.round(activity.getSpeed() * MyConstants.SPEED_EXP);
     }
+
+    /**
+     *  --expToLevel--
+     *  Calculate exp to level
+     */
 
     public ExpAndLevel expToLevel(int totalExp) {
         int level = totalExp / MyConstants.MAX_EXP;

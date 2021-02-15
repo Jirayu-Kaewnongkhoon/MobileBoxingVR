@@ -73,6 +73,11 @@ public class SettingActivity extends AppCompatActivity {
                     }
                 };
 
+        /**
+         *  --permissionCheck--
+         *  Show request permission dialog
+         */
+
         private void permissionCheck() {
             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -99,6 +104,12 @@ public class SettingActivity extends AppCompatActivity {
 
             }
         }
+
+        /**
+         *  --onRequestPermissionsResult--
+         *  Check if permission granted then start background task
+         *  Otherwise, show info dialog
+         */
 
         @Override
         public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

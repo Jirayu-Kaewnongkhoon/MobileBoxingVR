@@ -47,6 +47,11 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
+    /**
+     *  --initializeView--
+     *  Setup view and instantiate object
+     */
+
     private void initializeView(View view) {
         menuSetting = view.findViewById(R.id.menuSetting);
         menuAbout = view.findViewById(R.id.menuAbout);
@@ -60,11 +65,22 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
         game = new GameManager();
     }
 
+    /**
+     *  --setupOnClick--
+     *  Setup onClick listener
+     */
+
     private void setupOnClick() {
         menuSetting.setOnClickListener(this);
         menuAbout.setOnClickListener(this);
         menuLogout.setOnClickListener(this);
     }
+
+    /**
+     *  --displayPlayerInfo--
+     *  Get game profile from database
+     *  and display to screen
+     */
 
     private void displayPlayerInfo() {
         game.getGameProfile().addValueEventListener(new ValueEventListener() {
@@ -86,13 +102,29 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    /**
+     *  --onSettingClick--
+     *  Go to SettingActivity
+     */
+
     private void onSettingClick() {
         startActivity(new Intent(getActivity(), SettingActivity.class));
     }
 
+    /**
+     *  --onAboutClick--
+     *  Go to AboutActivity
+     */
+
     private void onAboutClick() {
         startActivity(new Intent(getActivity(), AboutActivity.class));
     }
+
+    /**
+     *  --onLogoutClick--
+     *  Logout user and stop background task
+     *  then go to LoginActivity
+     */
 
     private void onLogoutClick() {
         UserManager.getInstance().logout();

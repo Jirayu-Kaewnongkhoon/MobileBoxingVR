@@ -101,6 +101,11 @@ public class BackgroundTask {
         }
     }
 
+    /**
+     *  --isLocationServiceRunning--
+     *  Check location service is already running or not
+     */
+
     private boolean isLocationServiceRunning() {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         if (activityManager != null) {
@@ -144,6 +149,11 @@ public class BackgroundTask {
         }
     }
 
+    /**
+     *  --isStepCounterServiceRunning--
+     *  Check step counter service is already running or not
+     */
+
     private boolean isStepCounterServiceRunning() {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         if (activityManager != null) {
@@ -158,6 +168,11 @@ public class BackgroundTask {
         }
         return false;
     }
+
+    /**
+     *  --resetActivityValue--
+     *  Reset important value that use to calculate
+     */
 
     private void resetActivityValue() {
         SharedPreferenceManager pref = new SharedPreferenceManager(context);

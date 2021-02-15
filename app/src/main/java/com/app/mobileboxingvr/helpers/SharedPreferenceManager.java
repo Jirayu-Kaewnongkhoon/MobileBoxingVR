@@ -143,7 +143,7 @@ public class SharedPreferenceManager {
 
     /**
      *  --resetTotalDistance--
-     *  Reset total distance for next round
+     *  Reset total distance in SharedPreference
      */
 
     public void resetTotalDistance() {
@@ -151,15 +151,30 @@ public class SharedPreferenceManager {
         editor.apply();
     }
 
+    /**
+     *  --resetTimestampValue--
+     *  Reset timestamp in SharedPreference
+     */
+
     public void resetTimestampValue() {
         editor.remove(MyConstants.PREVIOUS_TIMESTAMP_VALUE);
         editor.apply();
     }
 
+    /**
+     *  --resetStepCounterValue--
+     *  Reset step counter in SharedPreference
+     */
+
     public void resetStepCounterValue() {
         editor.remove(MyConstants.PREVIOUS_STEP_COUNTER_VALUE);
         editor.apply();
     }
+
+    /**
+     *  --resetLocation--
+     *  Reset location in SharedPreference
+     */
 
     public void resetLocation() {
         editor.remove(MyConstants.LATITUDE_VALUE);

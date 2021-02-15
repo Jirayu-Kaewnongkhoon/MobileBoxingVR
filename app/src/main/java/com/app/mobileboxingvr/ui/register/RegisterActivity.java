@@ -48,6 +48,12 @@ public class RegisterActivity extends AppCompatActivity {
         initializeView();
     }
 
+    /**
+     *  --onStart--
+     *  Get all player name in database
+     *  and save to list
+     */
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -71,6 +77,11 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     *  --initializeView--
+     *  Setup view and instantiate object
+     */
+
     private void initializeView() {
         etPlayerName = findViewById(R.id.etPlayerName);
         etEmail = findViewById(R.id.etEmail);
@@ -83,9 +94,22 @@ public class RegisterActivity extends AppCompatActivity {
         list = new ArrayList<>();
     }
 
+    /**
+     *  --onLoginClick--
+     *  Back to LoginActivity
+     */
+
     public void onLoginClick(View view) {
         finish();
     }
+
+    /**
+     *  --onRegisterClick--
+     *  Validate user input
+     *  and register user with email and password
+     *  then set player name to database
+     *  and go to MainActivity
+     */
 
     public void onRegisterClick(View view) {
         String playerName = etPlayerName.getText().toString().trim();
@@ -121,6 +145,12 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *  --updateGameProfile--
+     *  Create game profile with player name
+     *  and set it to database
+     */
+
     public void updateGameProfile(String playerName) {
         GameProfile gameProfile = new GameProfile();
         gameProfile.setPlayerName(playerName);
@@ -130,6 +160,11 @@ public class RegisterActivity extends AppCompatActivity {
         game.updateGameProfile(gameProfile);
     }
 
+    /**
+     *  --registerValidator--
+     *  Validate user input for register form
+     */
+
     private boolean registerValidator(String playerName, String email, String password) {
 
         if (playerName.isEmpty()) {
@@ -137,7 +172,7 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         }
 
-        if (isExist(playerName)) {
+        if (isExistingPlayerName(playerName)) {
             etPlayerName.setError("This name is already taken");
             return false;
         }
@@ -165,7 +200,12 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean isExist(String playerName) {
+    /**
+     *  --isExistingPlayerName--
+     *  Check if player name is existing in database
+     */
+
+    private boolean isExistingPlayerName(String playerName) {
         return list.contains(playerName);
     }
 }

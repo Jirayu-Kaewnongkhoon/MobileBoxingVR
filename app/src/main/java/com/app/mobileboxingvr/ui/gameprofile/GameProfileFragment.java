@@ -70,6 +70,11 @@ public class GameProfileFragment extends Fragment {
         }
     }
 
+    /**
+     *  --initializeView--
+     *  Setup view and instantiate object
+     */
+
     private void initializeView(View v) {
         tvStrengthLevel = v.findViewById(R.id.tvStrengthLevel);
         tvStaminaLevel = v.findViewById(R.id.tvStaminaLevel);
@@ -90,6 +95,12 @@ public class GameProfileFragment extends Fragment {
 
         game = new GameManager();
     }
+
+    /**
+     *  --displayPlayerStatus--
+     *  Get game profile from database
+     *  and setup to screen
+     */
 
     private void displayPlayerStatus() {
         profile.setVisibility(View.INVISIBLE);
@@ -117,6 +128,11 @@ public class GameProfileFragment extends Fragment {
         });
     }
 
+    /**
+     *  --setupGameProfile--
+     *  Setup game profile to screen
+     */
+
     private void setupGameProfile(GameProfile gameProfile) {
         tvStrengthLevel.setText(String.valueOf(gameProfile.getStrengthLevel()));
         strengthExpBar.setProgress(gameProfile.getStrengthExp());
@@ -134,8 +150,14 @@ public class GameProfileFragment extends Fragment {
         tvTimestamp.setText("Last Update : " + gameProfile.getTimestamp());
     }
 
+    /**
+     *  --permissionCheck--
+     *  Check if is first time permission request
+     *  then show request dialog
+     */
+
     private void permissionCheck() {
-        SharedPreferences pref = getActivity().getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences pref = getActivity().getSharedPreferences("PermissionCheck", Context.MODE_PRIVATE);
         boolean isFirstTime = pref.getBoolean("isFirstTime", true);
 
         if (isFirstTime) {
@@ -163,6 +185,12 @@ public class GameProfileFragment extends Fragment {
             }
         }
     }
+
+    /**
+     *  --onRequestPermissionsResult--
+     *  Check if permission granted then start background task
+     *  Otherwise, show info dialog
+     */
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

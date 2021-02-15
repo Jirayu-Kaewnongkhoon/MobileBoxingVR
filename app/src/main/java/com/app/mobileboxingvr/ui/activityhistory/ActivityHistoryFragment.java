@@ -36,12 +36,18 @@ public class ActivityHistoryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_activityhistory, container, false);
 
-        initialView(v);
+        initializeView(v);
         recyclerViewSetup();
         loadActivityHistory();
 
         return v;
     }
+
+    /**
+     *  --loadActivityHistory--
+     *  Get all user activity from database
+     *  and set to recycler view
+     */
 
     private void loadActivityHistory() {
         activity.getUserActivity()
@@ -66,11 +72,21 @@ public class ActivityHistoryFragment extends Fragment {
                 });
     }
 
-    private void initialView(View v) {
+    /**
+     *  --initializeView--
+     *  Setup view and instantiate object
+     */
+
+    private void initializeView(View v) {
         recyclerView = v.findViewById(R.id.rvHistory);
 
         activity = ActivityManager.getInstance(getActivity());
     }
+
+    /**
+     *  --recyclerViewSetup--
+     *  Setup recycler view property
+     */
 
     private void recyclerViewSetup() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());

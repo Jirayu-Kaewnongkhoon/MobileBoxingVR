@@ -44,6 +44,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *  --initializeView--
+     *  Setup view and instantiate object
+     */
+
     private void initializeView() {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
@@ -52,6 +57,13 @@ public class LoginActivity extends AppCompatActivity {
 
         user = UserManager.getInstance();
     }
+
+    /**
+     *  --onLoginClick--
+     *  Validate user input
+     *  and login user with email and password
+     *  then go to MainActivity
+     */
 
     public void onLoginClick(View view) {
         String email = etEmail.getText().toString().trim();
@@ -84,9 +96,19 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *  --onRegisterClick--
+     *  Go to RegisterActivity
+     */
+
     public void onRegisterClick(View view) {
         startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
     }
+
+    /**
+     *  --loginValidator--
+     *  Validate user input for login form
+     */
 
     private boolean loginValidator(String email, String password) {
 
