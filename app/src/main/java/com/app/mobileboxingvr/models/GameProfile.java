@@ -16,18 +16,15 @@ public class GameProfile {
     private String playerName;
     private int playerLevel;
     private int playerExp;
-    private List<Integer> skills;
-    private String timestamp;
+    private List<Skill> skills;
+    private long timestamp;
 
     public GameProfile() {}
 
-    public GameProfile(int strengthExp, int staminaExp, int health, int damage, int defense, String timestamp) {
-        this.strengthExp = strengthExp;
-        this.staminaExp = staminaExp;
-        this.health = health;
-        this.damage = damage;
-        this.defense = defense;
-        this.timestamp = timestamp;
+    public void initializeStatus() {
+        health = 100;
+        damage = 5;
+        defense = 2;
     }
 
     public int getStrengthLevel() {
@@ -126,11 +123,19 @@ public class GameProfile {
         this.playerExp = playerExp;
     }
 
-    public String getTimestamp() {
+    public List<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
+    }
+
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -149,7 +154,39 @@ public class GameProfile {
                 ", playerName=" + playerName +
                 ", playerLevel=" + playerLevel +
                 ", playerExp=" + playerExp +
+                ", skills=" + skills +
                 ", timestamp='" + timestamp + '\'' +
                 '}';
+    }
+
+    public static class Skill {
+        private int skillId;
+        private long timestamp;
+
+        public Skill() {}
+
+        public int getSkillId() {
+            return skillId;
+        }
+
+        public void setSkillId(int skillId) {
+            this.skillId = skillId;
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
+
+        public void setTimestamp(long timestamp) {
+            this.timestamp = timestamp;
+        }
+
+        @Override
+        public String toString() {
+            return "Skill{" +
+                    "skillId=" + skillId +
+                    ", timestamp=" + timestamp +
+                    '}';
+        }
     }
 }

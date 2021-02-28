@@ -1,7 +1,5 @@
 package com.app.mobileboxingvr.constants;
 
-import java.util.concurrent.TimeUnit;
-
 public class MyConstants {
 
     /**
@@ -28,8 +26,8 @@ public class MyConstants {
      *  Constants Value for Time
      */
 
-    public static final long MILLI_SECOND = TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES);
-    public static final long SECOND = TimeUnit.SECONDS.convert(1, TimeUnit.MINUTES);
+    public static final int MILLI_SECOND = 60000;
+    public static final int SECOND = 60;
 
     /**
      *  Constants Value for Condition check
@@ -55,5 +53,13 @@ public class MyConstants {
     public static final int MAX_EXP = 100;
     public static final double EXP_PER_STEP = 0.5;
     public static final int SPEED_EXP = 10;
+
+    /**
+     *  Constants Value for Game
+     */
+
+    public static final int AGILITY_SKILL = 0;
+    public static final int STRENGTH_SKILL = 6;
+    public static final int STAMINA_SKILL = 12;
 
 }

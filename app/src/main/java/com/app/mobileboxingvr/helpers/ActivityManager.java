@@ -8,10 +8,6 @@ import com.app.mobileboxingvr.models.UserActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 public class ActivityManager {
 
     private static final String TAG = "ActivityService";
@@ -96,15 +92,8 @@ public class ActivityManager {
      *  Get current timestamp value
      */
 
-    public String getTimestamp() {
-        Date dNow = new Date();
-
-        SimpleDateFormat ft = new SimpleDateFormat("dd.MM 'at' HH:mm:ss");
-        ft.setTimeZone(TimeZone.getTimeZone("Asia/Bangkok"));
-
-        String timestamp = ft.format(dNow);
-
-        return timestamp;
+    public long getTimestamp() {
+        return System.currentTimeMillis();
     }
 
     /**

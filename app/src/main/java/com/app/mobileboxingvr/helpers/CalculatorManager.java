@@ -14,10 +14,16 @@ public class CalculatorManager {
     /**
      *  --getStrengthExp--
      *  Calculate activity to Strength Exp
+     *  and if it has Strength skill
+     *  then add up with bonus exp
      */
 
-    public int getStrengthExp() {
+    public int getStrengthExp(boolean hasStrengthSkill) {
         int stepCounter = activity.getStepCounter();
+
+        if (hasStrengthSkill) {
+            stepCounter += stepCounter * 0.05;
+        }
 
         return (int) Math.round(stepCounter * MyConstants.EXP_PER_STEP);
     }
@@ -25,22 +31,38 @@ public class CalculatorManager {
     /**
      *  --getStaminaExp--
      *  Calculate activity to Stamina Exp
+     *  and if it has Stamina skill
+     *  then add up with bonus exp
      */
 
-    public int getStaminaExp() {
+    public int getStaminaExp(boolean hasStaminaSkill) {
         int stepCounter = activity.getStepCounter();
         int timeSpent = activity.getTimeSpent();
 
-        return stepCounter / timeSpent;
+        int stepPerMinute = stepCounter / timeSpent;
+
+        if (hasStaminaSkill) {
+            stepPerMinute += stepPerMinute * 0.05;
+        }
+
+        return Math.round(stepPerMinute);
     }
 
     /**
      *  --getAgilityExp--
      *  Calculate activity to Agility Exp
+     *  and if it has Agility skill
+     *  then add up with bonus exp
      */
 
-    public int getAgilityExp() {
-        return (int) Math.round(activity.getSpeed() * MyConstants.SPEED_EXP);
+    public int getAgilityExp(boolean hasAgilitySkill) {
+        double speed = activity.getSpeed();
+
+        if (hasAgilitySkill) {
+            speed += speed * 0.05;
+        }
+
+        return (int) Math.round(speed * MyConstants.SPEED_EXP);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.app.mobileboxingvr.works;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalTime;
+import java.util.List;
 
 public class ActivityWork extends Worker {
 
@@ -60,11 +62,7 @@ public class ActivityWork extends Worker {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 gameProfile = snapshot.getValue(GameProfile.class);
-                Log.d(TAG, "loadGameProfile: " + (gameProfile != null ? gameProfile.toString() : "NULL"));
-
-                if (gameProfile == null) {
-                    gameProfile = new GameProfile();
-                }
+                Log.d(TAG, "loadGameProfile: " + gameProfile.toString());
 
                 calculateUserActivityToGameProfile();
             }
@@ -85,14 +83,17 @@ public class ActivityWork extends Worker {
     private void loadUserActivity() {
         ActivityManager activity = ActivityManager.getInstance(getApplicationContext());
 
-        String timestamp = activity.getTimestamp();
+        long timestamp = activity.getTimestamp();
         int timeSpent = activity.getTimeSpent();
         int stepCounter = activity.getStepCounterValue();
         double distance = activity.getDistance();
         double speed = activity.getSpeed(distance, timeSpent);
 
-        // first time will not do anything
-        if (stepCounter == MyConstants.DEFAULT_VALUE && timeSpent == MyConstants.DEFAULT_VALUE) {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("BackgroundTask", Context.MODE_PRIVATE);
+        boolean isFirstTime = pref.getBoolean("isFirstTime", true);
+
+        if (isFirstTime) {
+            pref.edit().putBoolean("isFirstTime", false).apply();
             return;
         }
 
@@ -112,13 +113,16 @@ public class ActivityWork extends Worker {
     private void calculateUserActivityToGameProfile() {
         CalculatorManager calculator = new CalculatorManager(newActivityValue);
 
+        // TODO : add bonus status when level up
+
         // calculate Strength
-        int newStrengthExp = calculator.getStrengthExp();
+        int newStrengthExp = calculator.getStrengthExp(hasSkill(MyConstants.STRENGTH_SKILL));
         int oldStrengthExp = gameProfile.getStrengthExp();
         int totalStrengthExp = oldStrengthExp + newStrengthExp;
 
-        int newStrengthLevel = calculator.expToLevel(totalStrengthExp).getLevel();
-        int remainStrengthExp = calculator.expToLevel(totalStrengthExp).getExp();
+        CalculatorManager.ExpAndLevel strength = calculator.expToLevel(totalStrengthExp);
+        int newStrengthLevel = strength.getLevel();
+        int remainStrengthExp = strength.getExp();
 
         int oldStrengthLevel = gameProfile.getStrengthLevel();
         gameProfile.setStrengthLevel(oldStrengthLevel + newStrengthLevel);
@@ -126,12 +130,13 @@ public class ActivityWork extends Worker {
 
 
         // calculate Stamina
-        int newStaminaExp = calculator.getStaminaExp();
+        int newStaminaExp = calculator.getStaminaExp(hasSkill(MyConstants.STAMINA_SKILL));
         int oldStaminaExp = gameProfile.getStaminaExp();
         int totalStaminaExp = oldStaminaExp + newStaminaExp;
 
-        int newStaminaLevel = calculator.expToLevel(totalStaminaExp).getLevel();
-        int remainStaminaExp = calculator.expToLevel(totalStaminaExp).getExp();
+        CalculatorManager.ExpAndLevel stamina = calculator.expToLevel(totalStaminaExp);
+        int newStaminaLevel = stamina.getLevel();
+        int remainStaminaExp = stamina.getExp();
 
         int oldStaminaLevel = gameProfile.getStaminaLevel();
         gameProfile.setStaminaLevel(oldStaminaLevel + newStaminaLevel);
@@ -139,12 +144,13 @@ public class ActivityWork extends Worker {
 
 
         // calculate Agility
-        int newAgilityExp = calculator.getAgilityExp();
+        int newAgilityExp = calculator.getAgilityExp(hasSkill(MyConstants.AGILITY_SKILL));
         int oldAgilityExp = gameProfile.getAgilityExp();
         int totalAgilityExp = oldAgilityExp + newAgilityExp;
 
-        int newAgilityLevel = calculator.expToLevel(totalAgilityExp).getLevel();
-        int remainAgilityExp = calculator.expToLevel(totalAgilityExp).getExp();
+        CalculatorManager.ExpAndLevel agility = calculator.expToLevel(totalAgilityExp);
+        int newAgilityLevel = agility.getLevel();
+        int remainAgilityExp = agility.getExp();
 
         int oldAgilityLevel = gameProfile.getAgilityLevel();
         gameProfile.setStaminaLevel(oldAgilityLevel + newAgilityLevel);
@@ -156,6 +162,24 @@ public class ActivityWork extends Worker {
 
         Log.d(TAG, "calculateUserActivityToGameProfile: " + gameProfile.toString());
         game.updateGameProfile(gameProfile);
+    }
+
+    /**
+     *  --hasSkill--
+     *  Check if skill list contain base skill before user activity are created
+     */
+
+    private boolean hasSkill(int skillId) {
+        List<GameProfile.Skill> skillList = gameProfile.getSkills();
+        long currentTimestamp = System.currentTimeMillis();
+
+        for (GameProfile.Skill skill : skillList) {
+            if (skill.getSkillId() == skillId && skill.getTimestamp() < currentTimestamp) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -24,14 +24,15 @@ import androidx.fragment.app.Fragment;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.background.BackgroundTask;
-import com.app.mobileboxingvr.constants.MyConstants;
 import com.app.mobileboxingvr.models.GameProfile;
 import com.app.mobileboxingvr.helpers.GameManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class GameProfileFragment extends Fragment {
 
@@ -57,17 +58,7 @@ public class GameProfileFragment extends Fragment {
 
         displayPlayerStatus();
 
-        checkSharedPreference();
-
         return v;
-    }
-
-    // TODO : delete this
-    private void checkSharedPreference() {
-        Map<String, ?> allEntries = getActivity().getSharedPreferences(MyConstants.SHARED_PREFS, Context.MODE_PRIVATE).getAll();
-        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            Log.d(TAG, entry.getKey() + ": " + entry.getValue().toString());
-        }
     }
 
     /**
@@ -147,7 +138,16 @@ public class GameProfileFragment extends Fragment {
         tvDamage.setText(String.valueOf(gameProfile.getDamage()));
         tvDefense.setText(String.valueOf(gameProfile.getDefense()));
 
-        tvTimestamp.setText("Last Update : " + gameProfile.getTimestamp());
+        tvTimestamp.setText("Last Update : " + getDateFormat(gameProfile.getTimestamp()));
+    }
+
+    private String getDateFormat(long timestamp) {
+        Date date = new Date(timestamp);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM 'at' HH:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("Asia/Bangkok"));
+
+        return format.format(date);
     }
 
     /**

@@ -2,7 +2,7 @@ package com.app.mobileboxingvr.models;
 
 public class UserActivity {
 
-    private String timestamp;
+    private long timestamp;
     private int timeSpent;
     private int stepCounter;
     private double distance;
@@ -10,7 +10,7 @@ public class UserActivity {
 
     public UserActivity() {}
 
-    public UserActivity(String timestamp, int timeSpent, int stepCounter, double distance, double speed) {
+    public UserActivity(long timestamp, int timeSpent, int stepCounter, double distance, double speed) {
         this.timestamp = timestamp;
         this.timeSpent = timeSpent;
         this.stepCounter = stepCounter;
@@ -18,11 +18,11 @@ public class UserActivity {
         this.speed = speed;
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
