@@ -17,11 +17,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.constants.MyConstants;
-import com.app.mobileboxingvr.helpers.GameManager;
 
 public class UserActivityFragment extends Fragment {
 
-    private TextView tvLocation, tvStepCounter;
+    private TextView tvLocation, tvStepCount;
 
     @Nullable
     @Override
@@ -31,17 +30,17 @@ public class UserActivityFragment extends Fragment {
         initializeView(v);
 
         LocalBroadcastManager.getInstance(getContext())
-                .registerReceiver(mMessageReceiver, new IntentFilter(MyConstants.ACTION_GET_VALUE_FROM_SERVICE));
+                .registerReceiver(mBroadcastReceiver, new IntentFilter(MyConstants.ACTION_GET_VALUE_FROM_SERVICE));
 
         return v;
     }
 
     private void initializeView(View v) {
         tvLocation = v.findViewById(R.id.tvLocation);
-        tvStepCounter = v.findViewById(R.id.tvStepCounter);
+        tvStepCount = v.findViewById(R.id.tvStepCount);
     }
 
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
@@ -49,7 +48,7 @@ public class UserActivityFragment extends Fragment {
             double lat = intent.getDoubleExtra(MyConstants.LATITUDE_VALUE, 0);
             double lng = intent.getDoubleExtra(MyConstants.LONGITUDE_VALUE, 0);
 
-            tvStepCounter.setText("Step: " + stepCount);
+            tvStepCount.setText("Step: " + stepCount);
             tvLocation.setText("Lat: " + lat + ", Lng: " + lng);
         }
     };

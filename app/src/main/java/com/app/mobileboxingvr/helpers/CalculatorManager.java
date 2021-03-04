@@ -19,13 +19,13 @@ public class CalculatorManager {
      */
 
     public int getStrengthExp(boolean hasStrengthSkill) {
-        double stepCounter = activity.getStepCounter() * MyConstants.EXP_PER_STEP;
+        double stepCount = activity.getStepCount() * MyConstants.EXP_PER_STEP;
 
         if (hasStrengthSkill) {
-            stepCounter += stepCounter * 0.05;
+            stepCount += stepCount * 0.05;
         }
 
-        return (int) Math.round(stepCounter);
+        return (int) Math.round(stepCount);
     }
 
     /**
@@ -36,10 +36,10 @@ public class CalculatorManager {
      */
 
     public int getStaminaExp(boolean hasStaminaSkill) {
-        int stepCounter = activity.getStepCounter();
+        int stepCount = activity.getStepCount();
         int timeSpent = activity.getTimeSpent();
 
-        int stepPerMinute = stepCounter / timeSpent;
+        int stepPerMinute = stepCount / timeSpent;
 
         if (hasStaminaSkill) {
             stepPerMinute += stepPerMinute * 0.05;

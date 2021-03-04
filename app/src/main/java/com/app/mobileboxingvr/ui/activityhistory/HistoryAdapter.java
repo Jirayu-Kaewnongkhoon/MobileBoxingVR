@@ -55,7 +55,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                         gameProfile = snapshot.getValue(GameProfile.class);
 
                         holder.tvTitle.setText(getDateFormat(currentItem.getTimestamp()));
-                        holder.tvDetail.setText("Step: " + currentItem.getStepCounter() + " , Time: " + currentItem.getTimeSpent());
+                        holder.tvDetail.setText("Step: " + currentItem.getStepCount() + " , Time: " + currentItem.getTimeSpent());
                         holder.tvStrengthExp.setText("Str +" + calculator.getStrengthExp(hasSkill(MyConstants.STRENGTH_SKILL, currentItem.getTimestamp())));
                         holder.tvStaminaExp.setText("Stm +" + calculator.getStaminaExp(hasSkill(MyConstants.STAMINA_SKILL, currentItem.getTimestamp())));
                         holder.tvAgilityExp.setText("Agi +" + calculator.getAgilityExp(hasSkill(MyConstants.AGILITY_SKILL, currentItem.getTimestamp())));

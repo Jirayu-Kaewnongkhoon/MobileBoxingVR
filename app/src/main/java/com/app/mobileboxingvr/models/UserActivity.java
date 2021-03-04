@@ -4,16 +4,16 @@ public class UserActivity {
 
     private long timestamp;
     private int timeSpent;
-    private int stepCounter;
+    private int stepCount;
     private double distance;
     private double speed;
 
     public UserActivity() {}
 
-    public UserActivity(long timestamp, int timeSpent, int stepCounter, double distance, double speed) {
+    public UserActivity(long timestamp, int timeSpent, int stepCount, double distance, double speed) {
         this.timestamp = timestamp;
         this.timeSpent = timeSpent;
-        this.stepCounter = stepCounter;
+        this.stepCount = stepCount;
         this.distance = distance;
         this.speed = speed;
     }
@@ -34,12 +34,12 @@ public class UserActivity {
         this.timeSpent = timeSpent;
     }
 
-    public int getStepCounter() {
-        return stepCounter;
+    public int getStepCount() {
+        return stepCount;
     }
 
-    public void setStepCounter(int stepCounter) {
-        this.stepCounter = stepCounter;
+    public void setStepCount(int stepCount) {
+        this.stepCount = stepCount;
     }
 
     public double getDistance() {
@@ -63,7 +63,7 @@ public class UserActivity {
         return "UserActivity{" +
                 "timestamp='" + timestamp + '\'' +
                 ", timeSpent=" + timeSpent +
-                ", stepCounter=" + stepCounter +
+                ", stepCount=" + stepCount +
                 ", distance=" + distance +
                 ", speed=" + speed +
                 '}';

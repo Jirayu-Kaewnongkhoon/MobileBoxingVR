@@ -77,9 +77,9 @@ public class SharedPreferenceManager {
      *  Save trigger value from StepCounter to SharedPreference
      */
 
-    public void saveEveryStepCounterValue(int stepCounterValue) {
+    public void saveEveryStepCounterValue(int stepCount) {
         // save every trigger value
-        editor.putInt(MyConstants.STEP_COUNTER_VALUE, stepCounterValue);
+        editor.putInt(MyConstants.STEP_COUNTER_VALUE, stepCount);
         editor.apply();
     }
 
@@ -88,9 +88,9 @@ public class SharedPreferenceManager {
      *  Save current step counter to use for previous value in next round
      */
 
-    public void saveCurrentStepCounterValue(int stepCounterValue) {
+    public void saveCurrentStepCounterValue(int stepCount) {
         // keep current value
-        editor.putInt(MyConstants.PREVIOUS_STEP_COUNTER_VALUE, stepCounterValue);
+        editor.putInt(MyConstants.PREVIOUS_STEP_COUNTER_VALUE, stepCount);
         editor.apply();
     }
 

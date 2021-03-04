@@ -85,7 +85,7 @@ public class ActivityWork extends Worker {
 
         long timestamp = activity.getTimestamp();
         int timeSpent = activity.getTimeSpent();
-        int stepCounter = activity.getStepCounterValue();
+        int stepCount = activity.getStepCounterValue();
         double distance = activity.getDistance();
         double speed = activity.getSpeed(distance, timeSpent);
 
@@ -97,7 +97,7 @@ public class ActivityWork extends Worker {
             return;
         }
 
-        newActivityValue = new UserActivity(timestamp, timeSpent, stepCounter, distance, speed);
+        newActivityValue = new UserActivity(timestamp, timeSpent, stepCount, distance, speed);
 
         Log.d(TAG, "loadUserActivity: " + newActivityValue.toString());
 

@@ -110,10 +110,10 @@ public class StepCounter extends Service implements SensorEventListener {
         }
     }
 
-    private void sendValueToActivity(int stepCounterValue) {
+    private void sendValueToActivity(int stepCount) {
         Intent intent = new Intent();
         intent.setAction(MyConstants.ACTION_GET_VALUE_FROM_SERVICE);
-        intent.putExtra(MyConstants.STEP_COUNTER_VALUE, stepCounterValue);
+        intent.putExtra(MyConstants.STEP_COUNTER_VALUE, stepCount);
 
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
@@ -166,14 +166,14 @@ public class StepCounter extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        int stepCounterValue = (int) sensorEvent.values[0];
+        int stepCount = (int) sensorEvent.values[0];
 
-        sendValueToActivity(stepCounterValue);
+        sendValueToActivity(stepCount);
 
         // use SharedPreference to save current value
-        pref.saveEveryStepCounterValue(stepCounterValue);
+        pref.saveEveryStepCounterValue(stepCount);
 
-        Log.d(TAG, "onSensorChanged: step => " + stepCounterValue);
+        Log.d(TAG, "onSensorChanged: step => " + stepCount);
     }
 
     @Override
