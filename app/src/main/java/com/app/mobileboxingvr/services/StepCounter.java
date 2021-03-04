@@ -16,6 +16,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.constants.MyConstants;
@@ -109,6 +110,14 @@ public class StepCounter extends Service implements SensorEventListener {
         }
     }
 
+    private void sendValueToActivity(int stepCounterValue) {
+        Intent intent = new Intent();
+        intent.setAction(MyConstants.ACTION_GET_VALUE_FROM_SERVICE);
+        intent.putExtra(MyConstants.STEP_COUNTER_VALUE, stepCounterValue);
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+    }
+
     /**
      *  --createNotification--
      *  Create Notification for running persistent service
@@ -158,6 +167,8 @@ public class StepCounter extends Service implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         int stepCounterValue = (int) sensorEvent.values[0];
+
+        sendValueToActivity(stepCounterValue);
 
         // use SharedPreference to save current value
         pref.saveEveryStepCounterValue(stepCounterValue);

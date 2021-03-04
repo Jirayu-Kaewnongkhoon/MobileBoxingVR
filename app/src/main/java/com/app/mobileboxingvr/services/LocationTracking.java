@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.constants.MyConstants;
@@ -111,6 +112,15 @@ public class LocationTracking extends Service implements LocationListener {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
     }
 
+    private void sendValueToActivity(double lat, double lng) {
+        Intent intent = new Intent();
+        intent.setAction(MyConstants.ACTION_GET_VALUE_FROM_SERVICE);
+        intent.putExtra(MyConstants.LATITUDE_VALUE, lat);
+        intent.putExtra(MyConstants.LONGITUDE_VALUE, lng);
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+    }
+
     /**
      *  --createNotification--
      *  Create Notification for running persistent service
@@ -167,6 +177,8 @@ public class LocationTracking extends Service implements LocationListener {
     public void onLocationChanged(@NonNull Location location) {
         double lat = location.getLatitude();
         double lng = location.getLongitude();
+
+        sendValueToActivity(lat, lng);
 
         // TODO : check if location is the same location then not execute OR set min meter
         // save every trigger value

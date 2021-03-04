@@ -19,13 +19,13 @@ public class CalculatorManager {
      */
 
     public int getStrengthExp(boolean hasStrengthSkill) {
-        int stepCounter = activity.getStepCounter();
+        double stepCounter = activity.getStepCounter() * MyConstants.EXP_PER_STEP;
 
         if (hasStrengthSkill) {
             stepCounter += stepCounter * 0.05;
         }
 
-        return (int) Math.round(stepCounter * MyConstants.EXP_PER_STEP);
+        return (int) Math.round(stepCounter);
     }
 
     /**
@@ -56,13 +56,13 @@ public class CalculatorManager {
      */
 
     public int getAgilityExp(boolean hasAgilitySkill) {
-        double speed = activity.getSpeed();
+        double speed = activity.getSpeed() * MyConstants.SPEED_EXP;
 
         if (hasAgilitySkill) {
             speed += speed * 0.05;
         }
 
-        return (int) Math.round(speed * MyConstants.SPEED_EXP);
+        return (int) Math.round(speed);
     }
 
     /**

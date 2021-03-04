@@ -8,6 +8,7 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -66,6 +67,9 @@ public class SettingActivity extends AppCompatActivity {
                                 permissionCheck();
                             } else {
                                 BackgroundTask.getInstance(getContext()).stopBackgroundTask();
+
+                                SharedPreferences pref = getContext().getSharedPreferences("BackgroundTask", Context.MODE_PRIVATE);
+                                pref.edit().remove("isFirstTime").apply();
                             }
 
                         }
