@@ -97,6 +97,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private boolean hasSkill(int skillId, long timestamp) {
         List<GameProfile.Skill> skillList = gameProfile.getSkills();
 
+        if (skillList == null) {
+            return false;
+        }
+
         for (GameProfile.Skill skill : skillList) {
 
             if (skill.getSkillId() == skillId && skill.getTimestamp() < timestamp) {

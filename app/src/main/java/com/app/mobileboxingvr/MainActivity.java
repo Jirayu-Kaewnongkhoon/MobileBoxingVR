@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import com.app.mobileboxingvr.ui.activityhistory.ActivityHistoryFragment;
 import com.app.mobileboxingvr.ui.gameprofile.GameProfileFragment;
 import com.app.mobileboxingvr.ui.other.OtherFragment;
+import com.app.mobileboxingvr.ui.useractivity.UserActivityFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.nav_home:
                             selected = new GameProfileFragment();
+                            break;
+                        case R.id.nav_activity:
+                            selected = new UserActivityFragment();
                             break;
                         case R.id.nav_history:
                             selected = new ActivityHistoryFragment();
