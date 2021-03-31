@@ -132,6 +132,18 @@ public class SharedPreferenceManager {
         return pref.getLong(MyConstants.PREVIOUS_TIMESTAMP_VALUE, MyConstants.DEFAULT_VALUE);
     }
 
+    public Location getLocation() {
+        Location location = new Location("");
+
+        long lat = pref.getLong(MyConstants.LATITUDE_VALUE, MyConstants.EXCLUDE_VALUE);
+        long lng = pref.getLong(MyConstants.LONGITUDE_VALUE, MyConstants.EXCLUDE_VALUE);
+
+        location.setLatitude(Double.longBitsToDouble(lat));
+        location.setLongitude(Double.longBitsToDouble(lng));
+
+        return location;
+    }
+
     /**
      *  --getTotalDistance--
      *  Get total distance as Double from SharedPreference

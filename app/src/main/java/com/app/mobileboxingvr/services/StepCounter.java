@@ -112,7 +112,7 @@ public class StepCounter extends Service implements SensorEventListener {
 
     private void sendValueToActivity(int stepCount) {
         Intent intent = new Intent();
-        intent.setAction(MyConstants.ACTION_GET_VALUE_FROM_SERVICE);
+        intent.setAction(MyConstants.ACTION_GET_STEP_COUNTER_VALUE_FROM_SERVICE);
         intent.putExtra(MyConstants.STEP_COUNTER_VALUE, stepCount);
 
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);

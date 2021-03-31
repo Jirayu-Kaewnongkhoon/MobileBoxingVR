@@ -46,7 +46,8 @@ public class MyConstants {
     public static final String ACTION_START_STEP_COUNTER_SERVICE = "StartStepCounterService";
     public static final String ACTION_STOP_STEP_COUNTER_SERVICE = "StopStepCounterService";
 
-    public static final String ACTION_GET_VALUE_FROM_SERVICE = "GetValueFromService";
+    public static final String ACTION_GET_LOCATION_VALUE_FROM_SERVICE = "GetLocationValueFromService";
+    public static final String ACTION_GET_STEP_COUNTER_VALUE_FROM_SERVICE = "GetStepCounterValueFromService";
 
     /**
      *  Constants Value for Calculate

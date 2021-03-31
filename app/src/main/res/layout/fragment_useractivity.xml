@@ -5,26 +5,54 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <ProgressBar
+        android:id="@+id/progressStep"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="52dp"
+        android:indeterminateOnly="false"
+        android:progressDrawable="@drawable/circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.306" />
+
+    <TextView
+        android:id="@+id/tvStepCountText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Step"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/progressStep"
+        app:layout_constraintEnd_toEndOf="@+id/progressStep"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@+id/progressStep"
+        app:layout_constraintTop_toTopOf="@+id/progressStep"
+        app:layout_constraintVertical_bias="0.417" />
+
     <TextView
         android:id="@+id/tvStepCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Step: 0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="24dp"
+        android:text="0/5000"
+        android:textSize="19sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvStepCountText"
+        app:layout_constraintStart_toStartOf="@+id/tvStepCountText"
+        app:layout_constraintTop_toBottomOf="@+id/tvStepCountText" />
 
     <TextView
         android:id="@+id/tvLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lat: 0, Lng: 0"
+        android:text="Distance: 0 km."
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvStepCount"
-        app:layout_constraintVertical_bias="0.061" />
+        app:layout_constraintTop_toBottomOf="@+id/progressStep"
+        app:layout_constraintVertical_bias="0.274" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

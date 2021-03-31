@@ -114,7 +114,7 @@ public class LocationTracking extends Service implements LocationListener {
 
     private void sendValueToActivity(double lat, double lng) {
         Intent intent = new Intent();
-        intent.setAction(MyConstants.ACTION_GET_VALUE_FROM_SERVICE);
+        intent.setAction(MyConstants.ACTION_GET_LOCATION_VALUE_FROM_SERVICE);
         intent.putExtra(MyConstants.LATITUDE_VALUE, lat);
         intent.putExtra(MyConstants.LONGITUDE_VALUE, lng);
 
