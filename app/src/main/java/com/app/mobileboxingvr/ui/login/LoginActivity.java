@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.app.mobileboxingvr.MainActivity;
+import com.app.mobileboxingvr.ui.MainActivity;
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.ui.register.RegisterActivity;
 import com.app.mobileboxingvr.helpers.UserManager;
@@ -32,16 +32,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         initializeView();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (user.getCurrentUser() != null) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
-        }
     }
 
     /**

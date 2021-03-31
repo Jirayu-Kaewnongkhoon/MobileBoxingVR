@@ -132,6 +132,7 @@ public class SharedPreferenceManager {
         return pref.getLong(MyConstants.PREVIOUS_TIMESTAMP_VALUE, MyConstants.DEFAULT_VALUE);
     }
 
+    // TODO : didn't use ??
     public Location getLocation() {
         Location location = new Location("");
 

@@ -83,7 +83,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private String getDateFormat(long timestamp) {
         Date date = new Date(timestamp);
 
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM 'at' HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy 'at' HH:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("Asia/Bangkok"));
 
         return format.format(date);

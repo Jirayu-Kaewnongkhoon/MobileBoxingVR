@@ -19,7 +19,6 @@ import com.app.mobileboxingvr.background.BackgroundTask;
 import com.app.mobileboxingvr.helpers.GameManager;
 import com.app.mobileboxingvr.helpers.UserManager;
 import com.app.mobileboxingvr.models.GameProfile;
-import com.app.mobileboxingvr.ui.login.LoginActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -129,7 +128,6 @@ public class OtherFragment extends Fragment implements View.OnClickListener {
     private void onLogoutClick() {
         UserManager.getInstance().logout();
         BackgroundTask.getInstance(getActivity()).stopBackgroundTask();
-        startActivity(new Intent(getActivity(), LoginActivity.class));
         getActivity().finish();
     }
 

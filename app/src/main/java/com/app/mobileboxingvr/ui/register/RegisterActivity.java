@@ -12,12 +12,12 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.app.mobileboxingvr.MainActivity;
 import com.app.mobileboxingvr.R;
 import com.app.mobileboxingvr.helpers.ActivityManager;
 import com.app.mobileboxingvr.helpers.GameManager;
 import com.app.mobileboxingvr.helpers.UserManager;
 import com.app.mobileboxingvr.models.GameProfile;
+import com.app.mobileboxingvr.ui.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
