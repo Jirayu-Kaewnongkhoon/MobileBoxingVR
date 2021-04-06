@@ -153,6 +153,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void updateGameProfile(String playerName) {
         GameProfile gameProfile = new GameProfile();
+        gameProfile.initializeStatus();
         gameProfile.setPlayerName(playerName);
         gameProfile.setTimestamp(ActivityManager.getInstance(getApplicationContext()).getTimestamp());
 
