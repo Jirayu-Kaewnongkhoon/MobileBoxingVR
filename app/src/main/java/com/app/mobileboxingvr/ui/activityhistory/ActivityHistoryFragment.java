@@ -1,6 +1,5 @@
 package com.app.mobileboxingvr.ui.activityhistory;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -97,13 +96,5 @@ public class ActivityHistoryFragment extends Fragment {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-
-        // add space between item
-        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                outRect.bottom = 10;
-            }
-        });
     }
 }

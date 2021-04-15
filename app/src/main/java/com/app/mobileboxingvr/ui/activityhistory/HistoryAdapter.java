@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.mobileboxingvr.R;
@@ -54,7 +55,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         gameProfile = snapshot.getValue(GameProfile.class);
 
-                        holder.tvTitle.setText(getDateFormat(currentItem.getTimestamp()));
+                        if (position != list.size() - 1) {
+                            String nextDate = getDateFormat(list.get(position + 1).getTimestamp()).substring(0, 10);
+                            String currentDate = getDateFormat(currentItem.getTimestamp()).substring(0, 10);
+
+                            if (currentDate.equals(nextDate)) {
+                                holder.layoutDate.setVisibility(View.GONE);
+                            }
+                        }
+
+                        holder.tvDate.setText(getDateFormat(currentItem.getTimestamp()).substring(0, 10));
+                        holder.tvTitle.setText(getDateFormat(currentItem.getTimestamp()).substring(11));
                         holder.tvDetail.setText("Step: " + currentItem.getStepCount() + " , Time: " + currentItem.getTimeSpent());
                         holder.tvStrengthExp.setText("Str +" + calculator.getStrengthExp(hasSkill(MyConstants.STRENGTH_SKILL, currentItem.getTimestamp())));
                         holder.tvStaminaExp.setText("Stm +" + calculator.getStaminaExp(hasSkill(MyConstants.STAMINA_SKILL, currentItem.getTimestamp())));
@@ -83,7 +94,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private String getDateFormat(long timestamp) {
         Date date = new Date(timestamp);
 
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy 'at' HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         format.setTimeZone(TimeZone.getTimeZone("Asia/Bangkok"));
 
         return format.format(date);
@@ -115,14 +126,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     public static class HistoryViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvTitle, tvDetail;
+        ConstraintLayout layoutDate;
+        TextView tvTitle, tvDetail, tvDate;
         TextView tvStrengthExp, tvStaminaExp, tvAgilityExp;
 
         public HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            layoutDate = itemView.findViewById(R.id.layoutDate);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvDetail = itemView.findViewById(R.id.tvDetail);
+            tvDate = itemView.findViewById(R.id.tvDate);
             tvStrengthExp = itemView.findViewById(R.id.tvStrengthExp);
             tvStaminaExp = itemView.findViewById(R.id.tvStaminaExp);
             tvAgilityExp = itemView.findViewById(R.id.tvAgilityExp);
