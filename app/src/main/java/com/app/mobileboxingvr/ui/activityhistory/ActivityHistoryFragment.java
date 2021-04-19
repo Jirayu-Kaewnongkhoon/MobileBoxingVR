@@ -60,7 +60,7 @@ public class ActivityHistoryFragment extends Fragment {
                             list.add(userActivity);
                         }
 
-                        recyclerView.setAdapter(new HistoryAdapter(list));
+                        recyclerView.setAdapter(new HistoryAdapter(list, getContext()));
                     }
 
 

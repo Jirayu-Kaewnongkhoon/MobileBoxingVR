@@ -1,9 +1,12 @@
 package com.app.mobileboxingvr.ui.activityhistory;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -30,11 +34,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private static final String TAG = "HistoryAdapter";
 
     private List<UserActivity> list;
+    private Context context;
 
     private GameProfile gameProfile;
 
-    public HistoryAdapter(List<UserActivity> list) {
+    public HistoryAdapter(List<UserActivity> list, Context context) {
         this.list = list;
+        this.context = context;
     }
 
     @NonNull
@@ -65,16 +71,48 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                         }
 
                         holder.tvDate.setText(getDateFormat(currentItem.getTimestamp()).substring(0, 10));
-                        holder.tvTitle.setText(getDateFormat(currentItem.getTimestamp()).substring(11));
-                        holder.tvDetail.setText("Step: " + currentItem.getStepCount() + " , Time: " + currentItem.getTimeSpent());
+                        holder.tvDetail.setText("At time : " + getDateFormat(currentItem.getTimestamp()).substring(11));
                         holder.tvStrengthExp.setText("Str +" + calculator.getStrengthExp(hasSkill(MyConstants.STRENGTH_SKILL, currentItem.getTimestamp())));
                         holder.tvStaminaExp.setText("Stm +" + calculator.getStaminaExp(hasSkill(MyConstants.STAMINA_SKILL, currentItem.getTimestamp())));
                         holder.tvAgilityExp.setText("Agi +" + calculator.getAgilityExp(hasSkill(MyConstants.AGILITY_SKILL, currentItem.getTimestamp())));
+
+                        holder.historyItem.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                                Dialog dialog = new Dialog(context);
+                                dialog.setContentView(R.layout.dialog_detail);
+
+                                setDialogData(dialog);
+
+                                dialog.show();
+
+                                ImageButton btnDetailClose = dialog.findViewById(R.id.btnDetailClose);
+                                btnDetailClose.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+                        });
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                         Log.d(TAG, "onCancelled: " + error.getMessage());
+                    }
+
+                    private void setDialogData(Dialog dialogView) {
+                        TextView step = dialogView.findViewById(R.id.tvDetailStepCount);
+                        TextView distance = dialogView.findViewById(R.id.tvDetailDistance);
+                        TextView speed = dialogView.findViewById(R.id.tvDetailSpeed);
+                        TextView time = dialogView.findViewById(R.id.tvDetailTimeSpent);
+
+                        step.setText("Steps : " + currentItem.getStepCount());
+                        distance.setText("Distance : " + new DecimalFormat("#0.00").format(currentItem.getDistance() / 1000) + " KM.");
+                        speed.setText("Speed : " + new DecimalFormat("#0.00").format(currentItem.getSpeed()) + " m/s.");
+                        time.setText("Time : " + currentItem.getTimeSpent() + " MIN");
                     }
                 });
 
@@ -115,7 +153,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         for (GameProfile.Skill skill : skillList) {
 
             if (skill.getSkillId() == skillId && skill.getTimestamp() < timestamp) {
-                Log.d(TAG, "hasSkill: " + skill.getSkillId() + " " + skillId + " " + skill.getTimestamp() + " " + timestamp);
                 return true;
             }
 
@@ -126,15 +163,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     public static class HistoryViewHolder extends RecyclerView.ViewHolder {
 
-        ConstraintLayout layoutDate;
-        TextView tvTitle, tvDetail, tvDate;
+        ConstraintLayout layoutDate, historyItem;
+        TextView tvDetail, tvDate;
         TextView tvStrengthExp, tvStaminaExp, tvAgilityExp;
 
         public HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
 
             layoutDate = itemView.findViewById(R.id.layoutDate);
-            tvTitle = itemView.findViewById(R.id.tvTitle);
+            historyItem = itemView.findViewById(R.id.historyItem);
             tvDetail = itemView.findViewById(R.id.tvDetail);
             tvDate = itemView.findViewById(R.id.tvDate);
             tvStrengthExp = itemView.findViewById(R.id.tvStrengthExp);

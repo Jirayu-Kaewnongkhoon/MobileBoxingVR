@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +24,7 @@ import java.text.DecimalFormat;
 
 public class UserActivityFragment extends Fragment {
 
-    private TextView tvLocation, tvStepCount;
+    private TextView tvDistance, tvStepCount, tvSpeed, tvTimeSpent;
     private ProgressBar progressStep;
 
     private SharedPreferenceManager pref;
@@ -43,8 +42,10 @@ public class UserActivityFragment extends Fragment {
     }
 
     private void initializeView(View v) {
-        tvLocation = v.findViewById(R.id.tvLocation);
+        tvDistance = v.findViewById(R.id.tvDistance);
         tvStepCount = v.findViewById(R.id.tvStepCount);
+        tvSpeed = v.findViewById(R.id.tvSpeed);
+        tvTimeSpent = v.findViewById(R.id.tvTimeSpent);
 
         progressStep = v.findViewById(R.id.progressStep);
 
@@ -65,16 +66,25 @@ public class UserActivityFragment extends Fragment {
     }
 
     private void updateDistance(double distance) {
-        tvLocation.setText("Distance: " + new DecimalFormat("#0.00").format(distance / 1000) + " km.");
+        tvDistance.setText(new DecimalFormat("#0.00").format(distance / 1000) + " KM.");
+    }
+
+    private void updateTimeSpent(long previousTimestamp) {
+        long timeSpent = Math.round((System.currentTimeMillis() - previousTimestamp) / MyConstants.MILLI_SECOND);
+        tvTimeSpent.setText(timeSpent + " MIN");
+    }
+
+    private void updateSpeed(long previousTimestamp, double distance) {
+        double timeSpent = (double) (System.currentTimeMillis() - previousTimestamp) / MyConstants.MILLI_SECOND;
+        tvSpeed.setText(new DecimalFormat("#0.00").format(distance / (timeSpent * MyConstants.SECOND)) + " M/S.");
     }
 
     private BroadcastReceiver mReceiverLocation = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            double lat = intent.getDoubleExtra(MyConstants.LATITUDE_VALUE, 0);
-            double lng = intent.getDoubleExtra(MyConstants.LONGITUDE_VALUE, 0);
-            // TODO : display current distance
             updateDistance(pref.getTotalDistance());
+            updateTimeSpent(pref.getPreviousTimestampValue());
+            updateSpeed(pref.getPreviousTimestampValue(), pref.getTotalDistance());
         }
     };
 

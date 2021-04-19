@@ -153,7 +153,7 @@ public class ActivityWork extends Worker {
         int remainAgilityExp = agility.getExp();
 
         int oldAgilityLevel = gameProfile.getAgilityLevel();
-        gameProfile.setStaminaLevel(oldAgilityLevel + newAgilityLevel);
+        gameProfile.setAgilityLevel(oldAgilityLevel + newAgilityLevel);
         gameProfile.setAgilityExp(remainAgilityExp);
 
 
@@ -173,10 +173,14 @@ public class ActivityWork extends Worker {
         List<GameProfile.Skill> skillList = gameProfile.getSkills();
         long currentTimestamp = System.currentTimeMillis();
 
-        for (GameProfile.Skill skill : skillList) {
-            if (skill.getSkillId() == skillId && skill.getTimestamp() < currentTimestamp) {
-                return true;
+        if (skillList != null) {
+
+            for (GameProfile.Skill skill : skillList) {
+                if (skill.getSkillId() == skillId && skill.getTimestamp() < currentTimestamp) {
+                    return true;
+                }
             }
+
         }
 
         return false;
