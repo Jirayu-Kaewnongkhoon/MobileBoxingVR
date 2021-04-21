@@ -155,7 +155,7 @@ public class RegisterActivity extends AppCompatActivity {
         GameProfile gameProfile = new GameProfile();
         gameProfile.initializeStatus();
         gameProfile.setPlayerName(playerName);
-        gameProfile.setTimestamp(ActivityManager.getInstance(getApplicationContext()).getTimestamp());
+        gameProfile.setTimestamp(new ActivityManager(getApplicationContext()).getTimestamp());
 
         GameManager game = new GameManager();
         game.updateGameProfile(gameProfile);

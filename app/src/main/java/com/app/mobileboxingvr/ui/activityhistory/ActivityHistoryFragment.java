@@ -79,7 +79,7 @@ public class ActivityHistoryFragment extends Fragment {
     private void initializeView(View v) {
         recyclerView = v.findViewById(R.id.rvHistory);
 
-        activity = ActivityManager.getInstance(getActivity());
+        activity = new ActivityManager(getActivity());
     }
 
     /**

@@ -81,7 +81,7 @@ public class ActivityWork extends Worker {
      */
 
     private void loadUserActivity() {
-        ActivityManager activity = ActivityManager.getInstance(getApplicationContext());
+        ActivityManager activity = new ActivityManager(getApplicationContext());
 
         long timestamp = activity.getTimestamp();
         int timeSpent = activity.getTimeSpent();
@@ -113,8 +113,6 @@ public class ActivityWork extends Worker {
     private void calculateUserActivityToGameProfile() {
         CalculatorManager calculator = new CalculatorManager(newActivityValue);
 
-        // TODO : add bonus status when level up
-
         // calculate Strength
         int newStrengthExp = calculator.getStrengthExp(hasSkill(MyConstants.STRENGTH_SKILL));
         int oldStrengthExp = gameProfile.getStrengthExp();
@@ -125,6 +123,10 @@ public class ActivityWork extends Worker {
         int remainStrengthExp = strength.getExp();
 
         int oldStrengthLevel = gameProfile.getStrengthLevel();
+        if (newStrengthLevel > 0) {
+            gameProfile.setHealth(gameProfile.getHealth() + newStrengthLevel);
+            gameProfile.setDamage(gameProfile.getDamage() + newStrengthLevel);
+        }
         gameProfile.setStrengthLevel(oldStrengthLevel + newStrengthLevel);
         gameProfile.setStrengthExp(remainStrengthExp);
 
@@ -139,6 +141,9 @@ public class ActivityWork extends Worker {
         int remainStaminaExp = stamina.getExp();
 
         int oldStaminaLevel = gameProfile.getStaminaLevel();
+        if (newStaminaLevel > 0) {
+            gameProfile.setDefense(gameProfile.getDefense() + newStaminaLevel);
+        }
         gameProfile.setStaminaLevel(oldStaminaLevel + newStaminaLevel);
         gameProfile.setStaminaExp(remainStaminaExp);
 

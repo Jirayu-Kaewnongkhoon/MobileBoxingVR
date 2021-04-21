@@ -12,8 +12,6 @@ public class ActivityManager {
 
     private static final String TAG = "ActivityService";
 
-    private static ActivityManager instance;
-
     private SharedPreferenceManager pref;
 
     private FirebaseDatabase database;
@@ -22,7 +20,7 @@ public class ActivityManager {
     private UserManager user;
     private String userID;
 
-    private ActivityManager(Context context) {
+    public ActivityManager(Context context) {
         pref = new SharedPreferenceManager(context);
 
         database = FirebaseDatabase.getInstance();
@@ -30,13 +28,6 @@ public class ActivityManager {
 
         user = UserManager.getInstance();
         userID = user.getCurrentUser().getUid();
-    }
-
-    public static ActivityManager getInstance(Context context) {
-        if (instance == null) {
-            instance = new ActivityManager(context);
-        }
-        return instance;
     }
 
     /**
