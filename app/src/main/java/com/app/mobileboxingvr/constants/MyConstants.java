@@ -54,7 +54,7 @@ public class MyConstants {
      */
 
     public static final int MAX_EXP = 100;
-    public static final double EXP_PER_STEP = 0.5;
+    public static final double EXP_PER_STEP = 0.01;
     public static final int SPEED_EXP = 10;
 
     /**

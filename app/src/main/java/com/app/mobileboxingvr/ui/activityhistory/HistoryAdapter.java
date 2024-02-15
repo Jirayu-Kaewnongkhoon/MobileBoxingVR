@@ -109,7 +109,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                         TextView speed = dialogView.findViewById(R.id.tvDetailSpeed);
                         TextView time = dialogView.findViewById(R.id.tvDetailTimeSpent);
 
-                        step.setText("Steps : " + currentItem.getStepCount());
+                        step.setText("Step : " + currentItem.getStepCount());
                         distance.setText("Distance : " + new DecimalFormat("#0.00").format(currentItem.getDistance() / 1000) + " KM.");
                         speed.setText("Speed : " + new DecimalFormat("#0.00").format(currentItem.getSpeed()) + " m/s.");
                         time.setText("Time : " + currentItem.getTimeSpent() + " MIN");
